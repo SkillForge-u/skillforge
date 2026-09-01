@@ -1,0 +1,3256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta property="og:title" content="SkillForge - No Skills No Reward">
+<meta property="og:description" content="Making money should be your first priority in 2026, and SkillForge is here to make that reality! Join thousands earning daily through referrals and tasks.">
+<meta property="og:image" content="https://skillforge-u.github.io/SkillForge/logo.png">
+<meta property="og:url" content="https://skillforge-u.github.io/SkillForge/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SkillForge - No Skills No Reward">
+<meta name="twitter:description" content="Making money should be your first priority in 2026, and SkillForge is here to make that reality! Join thousands earning daily through referrals and tasks.">
+<meta name="twitter:image" content="https://skillforge-u.github.io/SkillForge/logo.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SkillForge</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<style>
+:root {
+  --green: #1a5c3a; --green-dark: #0d3d24; --green-light: #2d7a52;
+  --gold: #d4af37; --gold-light: #f0d878; --gold-dark: #b8960c;
+  --white: #ffffff; --off-white: #f8f9f8;
+  --text: #1a1a1a; --text-light: #6b7280;
+  --success: #22c55e; --danger: #ef4444; --warning: #f59e0b;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body { font-family:'Inter',sans-serif; background:var(--off-white); color:var(--text); overflow-x:hidden; }
+::-webkit-scrollbar { width:3px; }
+::-webkit-scrollbar-thumb { background:var(--green); border-radius:3px; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);} }
+.fade-in { animation:fadeIn 0.5s ease forwards; }
+.landing-nav {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(0,0,0,0.05); padding:12px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.landing-nav .logo { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.landing-nav .logo-icon {
+  width:36px; height:36px; background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  border-radius:8px; display:flex; align-items:center; justify-content:center; position:relative;
+}
+.landing-nav .logo-icon::before, .landing-nav .logo-icon::after {
+  content:''; position:absolute; width:3px; height:20px; background:white; border-radius:2px;
+}
+.landing-nav .logo-icon::before { transform:rotate(45deg); }
+.landing-nav .logo-icon::after { transform:rotate(-45deg); }
+.landing-nav .logo-text { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; color:var(--green); }
+.landing-nav .nav-links { display:flex; align-items:center; gap:8px; }
+.landing-nav .nav-links a, .landing-nav .nav-links button {
+  padding:8px 18px; border-radius:50px; font-size:14px; font-weight:500;
+  text-decoration:none; border:none; cursor:pointer; font-family:'Inter',sans-serif; transition:all 0.2s;
+}
+.landing-nav .nav-links .nav-active { background:var(--green); color:white; }
+.landing-nav .nav-links .nav-link { background:transparent; color:var(--text-light); }
+.landing-nav .nav-links .nav-link:hover { color:var(--green); }
+.hero {
+  background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 100%);
+  min-height:100vh; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; text-align:center; padding:100px 24px 60px; position:relative; overflow:hidden;
+}
+.hero-badge {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,0.12); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.9);
+  padding:10px 20px; border-radius:50px; font-size:13px; font-weight:500; margin-bottom:28px;
+}
+.hero-badge::before { content:''; width:8px; height:8px; background:var(--gold); border-radius:50%; }
+.hero h1 { font-family:'Playfair Display',serif; font-size:36px; font-weight:700; color:white; line-height:1.2; max-width:340px; margin-bottom:16px; }
+.hero h1 .gold { color:var(--gold); }
+.hero p { font-size:15px; color:rgba(255,255,255,0.8); line-height:1.7; max-width:340px; margin-bottom:32px; }
+.hero-buttons { display:flex; flex-direction:column; gap:12px; width:100%; max-width:320px; }
+.btn-gold {
+  background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--green-dark);
+  padding:16px 32px; border-radius:50px; font-size:15px; font-weight:600; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  box-shadow:0 8px 30px rgba(212,175,55,0.3); transition:all 0.2s;
+}
+.btn-gold:active { transform:scale(0.98); }
+.btn-outline-gold {
+  background:transparent; color:var(--gold); padding:16px 32px; border-radius:50px;
+  font-size:15px; font-weight:600; border:2px solid var(--gold); cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;
+}
+.btn-outline-gold:hover { background:rgba(212,175,55,0.1); }
+.hero-stats { display:flex; justify-content:center; gap:40px; margin-top:48px; }
+.hero-stat h3 { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--gold); }
+.hero-stat p { font-size:12px; color:rgba(255,255,255,0.7); margin-top:4px; }
+.section { padding:60px 20px; }
+.section-title { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--green); text-align:center; margin-bottom:8px; }
+.section-subtitle { font-size:15px; color:var(--text-light); text-align:center; margin-bottom:40px; }
+.hiw-card {
+  background:white; border-radius:24px; padding:32px 24px; text-align:center;
+  margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04);
+}
+.hiw-num {
+  width:56px; height:56px; background:var(--green); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; margin:0 auto 16px;
+  font-family:'Playfair Display',serif; font-size:24px; font-weight:700; color:var(--gold);
+}
+.hiw-card h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--text); margin-bottom:10px; }
+.hiw-card p { font-size:14px; color:var(--text-light); line-height:1.6; max-width:280px; margin:0 auto; }
+.earn-card {
+  background:linear-gradient(135deg,var(--green) 0%,var(--green-light) 100%);
+  border-radius:24px; padding:32px 24px; text-align:center; margin-bottom:16px;
+  position:relative; overflow:hidden;
+}
+.earn-card::after { content:''; position:absolute; top:-20px; right:-20px; width:80px; height:80px; background:rgba(255,255,255,0.06); border-radius:50%; }
+.earn-card.gold { background:linear-gradient(135deg,var(--gold) 0%,var(--gold-dark) 100%); }
+.earn-card.gold::after { background:rgba(255,255,255,0.15); }
+.earn-card.gold .earn-label, .earn-card.gold .earn-desc { color:rgba(13,61,36,0.8); }
+.earn-card.gold .earn-amount { color:var(--green-dark); }
+.earn-label { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:8px; }
+.earn-amount { font-family:'Playfair Display',serif; font-size:42px; font-weight:700; color:var(--gold); margin-bottom:8px; }
+.earn-desc { font-size:14px; color:rgba(255,255,255,0.8); }
+.auth-page {
+  min-height:100vh; background:linear-gradient(180deg,var(--green) 0%,var(--green-dark) 100%);
+  display:flex; align-items:center; justify-content:center; padding:20px;
+}
+.auth-card {
+  background:white; border-radius:32px; padding:40px 28px; width:100%; max-width:400px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+}
+.auth-logo {
+  width:48px; height:48px; background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  border-radius:10px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; position:relative;
+}
+.auth-logo::before, .auth-logo::after { content:''; position:absolute; width:3px; height:24px; background:white; border-radius:2px; }
+.auth-logo::before { transform:rotate(45deg); }
+.auth-logo::after { transform:rotate(-45deg); }
+.auth-card h2 { font-family:'Playfair Display',serif; font-size:28px; font-weight:700; color:var(--green); text-align:center; margin-bottom:4px; }
+.auth-card .auth-sub { text-align:center; font-size:14px; color:var(--text-light); margin-bottom:28px; }
+.form-group { margin-bottom:20px; }
+.form-label { display:block; font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--text-light); margin-bottom:8px; }
+.form-input {
+  width:100%; padding:16px 18px; border:2px solid #e5e7eb; border-radius:16px;
+  font-size:15px; font-family:'Inter',sans-serif; background:#f9fafb; transition:all 0.2s;
+}
+.form-input:focus { outline:none; border-color:var(--green); background:white; }
+.btn-green {
+  width:100%; background:var(--green); color:white; padding:16px; border-radius:16px;
+  font-size:15px; font-weight:600; border:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px; transition:all 0.2s;
+}
+.btn-green:hover { background:var(--green-light); }
+.btn-green:active { transform:scale(0.98); }
+.btn-green:disabled { opacity:0.5; cursor:not-allowed; }
+.auth-footer { text-align:center; margin-top:24px; font-size:14px; color:var(--text-light); }
+.auth-footer a { color:var(--green); font-weight:600; text-decoration:underline; cursor:pointer; }
+.app-header {
+  position:fixed; top:0; left:0; right:0; z-index:1000;
+  background:rgba(255,255,255,0.95); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(0,0,0,0.05); padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.app-header .app-logo { display:flex; align-items:center; gap:8px; }
+.app-header .app-logo-icon {
+  width:32px; height:32px; background:linear-gradient(135deg,var(--gold),var(--gold-dark));
+  border-radius:8px; display:flex; align-items:center; justify-content:center; position:relative;
+}
+.app-header .app-logo-icon::before, .app-header .app-logo-icon::after { content:''; position:absolute; width:2.5px; height:18px; background:white; border-radius:2px; }
+.app-header .app-logo-icon::before { transform:rotate(45deg); }
+.app-header .app-logo-icon::after { transform:rotate(-45deg); }
+.app-header .app-logo-text { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--green); }
+.menu-btn { background:none; border:none; font-size:22px; color:var(--green); cursor:pointer; }
+.bottom-nav { position:fixed; bottom:0; left:0; right:0; z-index:999; background:white; border-top:1px solid rgba(0,0,0,0.05); display:flex; justify-content:space-around; padding:10px 0 16px; box-shadow:0 -4px 20px rgba(0,0,0,0.04); }
+.bottom-nav-item { display:flex; flex-direction:column; align-items:center; gap:4px; color:var(--text-light); font-size:10px; font-weight:500; background:none; border:none; cursor:pointer; padding:4px 16px; }
+.bottom-nav-item i { font-size:20px; }
+.bottom-nav-item.active { color:var(--green); }
+.page { display:none; min-height:100vh; padding:80px 16px 100px; animation:fadeIn 0.4s ease; }
+.page.active { display:block; }
+.card { background:white; border-radius:24px; padding:24px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); margin-bottom:16px; }
+.card-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--green); margin-bottom:16px; display:flex; align-items:center; gap:10px; }
+.card-title i { color:var(--gold); }
+.dash-hero { background:linear-gradient(135deg,var(--green),var(--green-dark)); border-radius:24px; padding:28px; color:white; margin-bottom:20px; position:relative; overflow:hidden; }
+.dash-hero::before { content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px; background:rgba(212,175,55,0.1); border-radius:50%; }
+.dash-hero .welcome { font-size:13px; opacity:0.8; margin-bottom:4px; }
+.dash-hero .name { font-family:'Playfair Display',serif; font-size:22px; font-weight:700; margin-bottom:20px; }
+.dash-wallets { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.dash-wallet { background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); border-radius:16px; padding:14px 8px; text-align:center; border:1px solid rgba(255,255,255,0.1); }
+.dash-wallet .wl { font-size:10px; opacity:0.7; margin-bottom:4px; }
+.dash-wallet .wa { font-size:15px; font-weight:700; }
+.qa-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:20px; }
+.qa-item { background:white; border-radius:20px; padding:16px 8px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); cursor:pointer; transition:all 0.2s; border:none; }
+.qa-item:active { transform:scale(0.95); }
+.qa-item i { width:44px; height:44px; background:linear-gradient(135deg,var(--green),var(--green-light)); color:white; border-radius:14px; display:inline-flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:8px; }
+.qa-item.gold i { background:linear-gradient(135deg,var(--gold),var(--gold-dark)); color:var(--green-dark); }
+.qa-item span { display:block; font-size:10px; font-weight:600; color:var(--text); }
+.stat-row { display:flex; align-items:center; gap:14px; padding:16px; background:white; border-radius:20px; margin-bottom:12px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); }
+.stat-icon { width:48px; height:48px; background:linear-gradient(135deg,var(--gold-light),var(--gold)); border-radius:14px; display:flex; align-items:center; justify-content:center; font-size:20px; color:var(--green-dark); }
+.stat-info h4 { font-size:12px; color:var(--text-light); font-weight:500; }
+.stat-info p { font-size:20px; font-weight:700; color:var(--green); font-family:'Playfair Display',serif; }
+.task-item { display:flex; align-items:center; gap:16px; padding:20px; background:white; border-radius:20px; margin-bottom:12px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); }
+.task-icon { width:52px; height:52px; min-width:52px; background:linear-gradient(135deg,var(--green),var(--green-light)); color:white; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:20px; }
+.task-info { flex:1; }
+.task-info h4 { font-size:15px; font-weight:600; color:var(--text); }
+.task-info p { font-size:12px; color:var(--text-light); margin-top:2px; }
+.task-reward { font-size:18px; font-weight:700; color:var(--gold-dark); font-family:'Playfair Display',serif; }
+.ref-box { background:linear-gradient(135deg,var(--green),var(--green-dark)); border-radius:24px; padding:28px; color:white; text-align:center; margin-bottom:20px; }
+.ref-box h4 { font-size:12px; opacity:0.7; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px; }
+.ref-code { font-family:'Playfair Display',serif; font-size:24px; font-weight:700; letter-spacing:2px; background:rgba(255,255,255,0.1); padding:12px 24px; border-radius:16px; display:inline-block; border:2px dashed rgba(255,255,255,0.25); margin-bottom:12px; }
+.ref-copy { background:var(--gold); color:var(--green-dark); border:none; padding:10px 24px; border-radius:50px; font-size:13px; font-weight:600; cursor:pointer; }
+.ref-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.ref-box-sm { background:white; border-radius:20px; padding:20px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); }
+.ref-box-sm h5 { font-size:12px; color:var(--text-light); margin-bottom:6px; }
+.ref-box-sm p { font-size:24px; font-weight:700; color:var(--green); font-family:'Playfair Display',serif; }
+.tab-bar { display:flex; gap:8px; margin-bottom:20px; background:white; padding:6px; border-radius:16px; box-shadow:0 2px 12px rgba(0,0,0,0.04); }
+.tab-bar button { flex:1; padding:12px; border:none; border-radius:12px; font-size:13px; font-weight:600; cursor:pointer; background:transparent; color:var(--text-light); transition:all 0.2s; }
+.tab-bar button.active { background:var(--green); color:white; }
+.plan-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.plan-item { background:white; border-radius:16px; padding:18px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:2px solid transparent; cursor:pointer; transition:all 0.2s; }
+.plan-item:hover, .plan-item.selected { border-color:var(--green); }
+.plan-item h4 { font-size:20px; font-weight:700; color:var(--green); font-family:'Playfair Display',serif; }
+.plan-item p { font-size:12px; color:var(--text-light); margin-top:4px; }
+.plan-item .price { font-size:14px; font-weight:700; color:var(--gold-dark); margin-top:8px; }
+.with-card { background:white; border-radius:24px; padding:28px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); margin-bottom:16px; }
+.with-bal { text-align:center; margin-bottom:20px; }
+.with-bal h4 { font-size:13px; color:var(--text-light); margin-bottom:4px; }
+.with-bal p { font-family:'Playfair Display',serif; font-size:32px; font-weight:700; color:var(--green); }
+.with-min { text-align:center; font-size:12px; color:var(--text-light); margin-bottom:14px; }
+.with-schedule { background:rgba(26,92,58,0.05); border-radius:16px; padding:14px; text-align:center; font-size:12px; color:var(--text-light); margin-bottom:16px; }
+.with-schedule i { color:var(--gold); margin-right:6px; }
+.with-status { text-align:center; padding:10px; border-radius:12px; font-size:13px; font-weight:600; margin-bottom:16px; }
+.with-status.open { background:#d1fae5; color:#065f46; }
+.with-status.closed { background:#fee2e2; color:#991b1b; }
+.admin-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:20px; }
+.admin-box { background:white; border-radius:20px; padding:20px; text-align:center; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); }
+.admin-box h5 { font-size:11px; color:var(--text-light); margin-bottom:6px; }
+.admin-box p { font-size:26px; font-weight:700; color:var(--green); font-family:'Playfair Display',serif; }
+.req-list { background:white; border-radius:24px; overflow:hidden; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:1px solid rgba(0,0,0,0.04); }
+.req-item { padding:16px 20px; border-bottom:1px solid #f3f4f6; display:flex; justify-content:space-between; align-items:center; }
+.req-item:last-child { border-bottom:none; }
+.req-item .ri-name { font-size:14px; font-weight:600; }
+.req-item .ri-meta { font-size:12px; color:var(--text-light); margin-top:2px; }
+.req-item .ri-amt { font-size:16px; font-weight:700; color:var(--green); }
+.req-item .ri-st { font-size:11px; font-weight:600; padding:4px 10px; border-radius:50px; }
+.ri-st.pending { background:#fef3c7; color:#92400e; }
+.ri-st.approved { background:#d1fae5; color:#065f46; }
+.ri-st.rejected { background:#fee2e2; color:#991b1b; }
+.ri-st.paid { background:#dbeafe; color:#1e40af; }
+.toggle-row { display:flex; align-items:center; justify-content:space-between; padding:16px 0; border-bottom:1px solid #f3f4f6; }
+.toggle-row:last-child { border-bottom:none; }
+.toggle-row .tl { font-size:14px; font-weight:600; }
+.toggle-row .ts { font-size:12px; color:var(--text-light); }
+.toggle-switch { position:relative; width:52px; height:28px; }
+.toggle-switch input { opacity:0; width:0; height:0; }
+.toggle-slider { position:absolute; cursor:pointer; top:0; left:0; right:0; bottom:0; background:#e5e7eb; border-radius:28px; transition:0.3s; }
+.toggle-slider::before { content:''; position:absolute; height:22px; width:22px; left:3px; bottom:3px; background:white; border-radius:50%; transition:0.3s; box-shadow:0 2px 4px rgba(0,0,0,0.1); }
+.toggle-switch input:checked + .toggle-slider { background:var(--green); }
+.toggle-switch input:checked + .toggle-slider::before { transform:translateX(24px); }
+.toast-box { position:fixed; top:80px; left:50%; transform:translateX(-50%); z-index:3000; display:flex; flex-direction:column; gap:8px; pointer-events:none; }
+.toast { background:var(--green-dark); color:white; padding:14px 24px; border-radius:16px; font-size:13px; font-weight:500; box-shadow:0 10px 40px rgba(0,0,0,0.15); display:flex; align-items:center; gap:10px; pointer-events:all; animation:fadeIn 0.3s ease; min-width:280px; max-width:90vw; }
+.toast.ok { background:var(--success); }
+.toast.err { background:var(--danger); }
+.toast.warn { background:var(--warning); color:var(--text); }
+.modal-bg { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:2500; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+.modal-bg.on { opacity:1; pointer-events:all; }
+.modal-bg:not(.on) { display:none !important; }
+.modal-card { background:white; border-radius:28px; padding:32px 24px; width:100%; max-width:400px; box-shadow:0 20px 60px rgba(0,0,0,0.2); transform:scale(0.9); transition:transform 0.3s; }
+.modal-bg.on .modal-card { transform:scale(1); }
+.modal-card h3 { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--green); text-align:center; margin-bottom:12px; }
+.modal-card p { font-size:13px; color:var(--text-light); text-align:center; line-height:1.6; margin-bottom:20px; }
+.modal-icon { width:64px; height:64px; background:linear-gradient(135deg,var(--gold-light),var(--gold)); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:24px; color:var(--green-dark); }
+.empty { text-align:center; padding:40px 20px; }
+.empty i { font-size:48px; color:#e5e7eb; margin-bottom:12px; }
+.empty h4 { font-size:16px; color:var(--text-light); }
+.empty p { font-size:13px; color:#9ca3af; margin-top:4px; }
+.site-footer { background:var(--green-dark); color:rgba(255,255,255,0.6); padding:40px 20px; text-align:center; }
+.site-footer .sf-logo { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:16px; }
+.site-footer .sf-icon { width:32px; height:32px; background:linear-gradient(135deg,var(--gold),var(--gold-dark)); border-radius:8px; display:flex; align-items:center; justify-content:center; position:relative; }
+.site-footer .sf-icon::before, .site-footer .sf-icon::after { content:''; position:absolute; width:2.5px; height:18px; background:white; border-radius:2px; }
+.site-footer .sf-icon::before { transform:rotate(45deg); }
+.site-footer .sf-icon::after { transform:rotate(-45deg); }
+.site-footer .sf-text { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:white; }
+.site-footer p { font-size:12px; }
+
+/* ===== NEW MINIMAL STYLES (using existing vars only) ===== */
+.pkg-card { background:white; border-radius:20px; padding:24px; margin-bottom:12px; box-shadow:0 2px 12px rgba(0,0,0,0.04); border:2px solid transparent; cursor:pointer; transition:all 0.2s; }
+.pkg-card:hover, .pkg-card.selected { border-color:var(--green); }
+.pkg-card .pkg-name { font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--green); }
+.pkg-card .pkg-price { font-size:28px; font-weight:700; color:var(--gold-dark); margin:8px 0; }
+.pkg-card .pkg-detail { font-size:13px; color:var(--text-light); margin-bottom:4px; }
+.pkg-active { border-color:var(--gold) !important; background:linear-gradient(135deg,rgba(212,175,55,0.05),rgba(212,175,55,0.1)) !important; }
+.deposit-bank { background:linear-gradient(135deg,var(--green),var(--green-dark)); border-radius:20px; padding:24px; color:white; margin-bottom:16px; }
+.deposit-bank .db-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.1); }
+.deposit-bank .db-row:last-child { border-bottom:none; }
+.deposit-bank .db-label { font-size:12px; opacity:0.7; }
+.deposit-bank .db-value { font-size:15px; font-weight:600; }
+.proof-upload { border:2px dashed #e5e7eb; border-radius:16px; padding:30px 20px; text-align:center; cursor:pointer; transition:all 0.2s; background:#f9fafb; }
+.proof-upload:hover { border-color:var(--green); background:rgba(26,92,58,0.03); }
+.proof-upload i { font-size:32px; color:var(--green); margin-bottom:8px; }
+.proof-upload p { font-size:13px; color:var(--text-light); }
+.proof-preview { max-width:100%; border-radius:12px; margin-top:12px; display:none; }
+.status-badge { display:inline-block; padding:4px 12px; border-radius:50px; font-size:11px; font-weight:600; }
+.status-badge.pending { background:#fef3c7; color:#92400e; }
+.status-badge.approved { background:#d1fae5; color:#065f46; }
+.status-badge.rejected { background:#fee2e2; color:#991b1b; }
+.status-badge.paid { background:#dbeafe; color:#1e40af; }
+.tx-row { display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #f3f4f6; }
+.tx-row:last-child { border-bottom:none; }
+.tx-row .tx-left { flex:1; }
+.tx-row .tx-title { font-size:14px; font-weight:600; color:var(--text); }
+.tx-row .tx-meta { font-size:12px; color:var(--text-light); margin-top:2px; }
+.tx-row .tx-amt { font-size:15px; font-weight:700; color:var(--green); }
+.tx-row .tx-amt.neg { color:var(--danger); }
+.admin-img { max-width:100%; border-radius:12px; margin:10px 0; border:1px solid #e5e7eb; }
+.task-detail { background:white; border-radius:20px; padding:24px; margin-bottom:16px; }
+.task-detail h3 { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--green); margin-bottom:12px; }
+.task-detail p { font-size:14px; color:var(--text-light); line-height:1.6; margin-bottom:12px; }
+.task-detail a { color:var(--green); font-weight:600; word-break:break-all; }
+.review-note { background:#fef3c7; border-radius:12px; padding:12px 16px; font-size:13px; color:#92400e; margin-top:12px; }
+.timer-box { background:linear-gradient(135deg,var(--green-dark),var(--green)); color:white; border-radius:16px; padding:20px; text-align:center; margin-bottom:16px; }
+.timer-box .timer-label { font-size:12px; opacity:0.7; letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.timer-box .timer-display { font-family:'Playfair Display',serif; font-size:36px; font-weight:700; color:var(--gold); }
+.step-indicator { display:flex; justify-content:center; gap:8px; margin-bottom:24px; }
+.step-dot { width:10px; height:10px; border-radius:50%; background:#e5e7eb; transition:all 0.3s; }
+.step-dot.active { background:var(--green); }
+.step-dot.done { background:var(--gold); }
+@media(min-width:768px){ .page{max-width:600px;margin:0 auto;padding-left:24px;padding-right:24px;} .plan-grid{grid-template-columns:repeat(2,1fr);} }
+body.landing .app-header, body.landing .bottom-nav, body.auth .app-header, body.auth .bottom-nav { display:none; }
+body.landing .page, body.auth .page { padding-top:0; padding-bottom:0; }
+</style>
+</head>
+<body class="landing">
+
+<div class="toast-box" id="toastBox"></div>
+<div class="modal-bg" id="modalBg"><div class="modal-card" id="modalCard"></div></div>
+
+<!-- Telegram Compulsory Join Modal -->
+<div class="modal-bg" id="tgModalBg" style="z-index:4000;display:none;" onclick="if(event.target===this){ closeTgModal(); }">
+  <div class="modal-card" style="text-align:center;max-width:360px;">
+    <div class="modal-icon" style="background:linear-gradient(135deg,#0088cc,#00aaff);"><i class="fab fa-telegram" style="color:white;"></i></div>
+    <h3>Join Our Telegram Channel</h3>
+    <p>Joining our Telegram channel is compulsory to stay updated with tasks, announcements, and payment schedules. Tap the button below to join, then return and click Continue.</p>
+    <a id="tgLinkBtn" href="https://t.me/SkillForgeOfficial" target="_blank" class="btn-green" style="margin-bottom:14px;text-decoration:none;display:inline-flex;width:auto;padding:14px 28px;background:linear-gradient(135deg,#0088cc,#005f99);border:none;" onclick="handleTgJoin()"><i class="fab fa-telegram"></i> Join Telegram Channel</a><br>
+    <button class="btn-green" id="tgContinueBtn" onclick="closeTgModal()" disabled style="opacity:0.5;background:#9ca3af;cursor:not-allowed;"><i class="fas fa-arrow-right"></i> Continue to Dashboard</button>
+  </div>
+</div>
+
+<header class="app-header" id="appHeader" style="display:none;">
+  <div style="width:32px;"></div>
+  <div class="app-logo">
+    <div class="app-logo-icon"></div>
+    <span class="app-logo-text">SkillForge</span>
+  </div>
+  <button class="menu-btn" onclick="goTo('profile')" title="Profile"><i class="fas fa-user-circle"></i></button>
+</header>
+
+<nav class="bottom-nav" id="botNav" style="display:none;">
+  <button class="bottom-nav-item active" id="navHome" onclick="goTo('dashboard')"><i class="fas fa-home"></i><span>Home</span></button>
+  <button class="bottom-nav-item" id="navTask" onclick="goTo('tasks')"><i class="fas fa-tasks"></i><span>Task</span></button>
+  <button class="bottom-nav-item" id="navRefer" onclick="goTo('referrals')"><i class="fas fa-users"></i><span>Refer</span></button>
+  <button class="bottom-nav-item" id="navWithdraw" onclick="goTo('withdraw')"><i class="fas fa-wallet"></i><span>Withdraw</span></button>
+  <button class="bottom-nav-item" id="navAdmin" onclick="goTo('admin')" style="display:none;"><i class="fas fa-shield-alt"></i><span>Admin</span></button>
+</nav>
+
+<!-- ==================== LANDING PAGE ==================== -->
+<div class="page active" id="page-landing">
+  <nav class="landing-nav">
+    <a href="#" class="logo" onclick="return false;">
+      <div class="logo-icon"></div>
+      <span class="logo-text">SkillForge</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-active" onclick="showLanding();return false;">Home</a>
+      <a href="#" class="nav-link" onclick="showPage('register');return false;">Join</a>
+      <a href="#" class="nav-link" onclick="showPage('login');return false;">Login</a>
+    </div>
+  </nav>
+  <div class="hero">
+    <div class="hero-badge">Community Growth & Digital Skills Network</div>
+    <h1>Start Your Digital Journey Today from Just <span class="gold">₦1,000</span></h1>
+    <p>Join a thriving community of learners, creators, and earners. Choose your package, complete tasks, refer friends, and earn real income daily.</p>
+    <div class="hero-buttons">
+      <button class="btn-gold" onclick="showPage('register')"><i class="fas fa-key"></i> Get Started</button>
+      <button class="btn-outline-gold" onclick="document.getElementById('packages-section').scrollIntoView({behavior:'smooth'})"><i class="fas fa-layer-group"></i> View Packages</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><h3 id="heroUsers">0</h3><p>Active Members</p></div>
+      <div class="hero-stat"><h3>₦4.2M+</h3><p>Paid Out</p></div>
+      <div class="hero-stat"><h3>24/7</h3><p>Support</p></div>
+    </div>
+  </div>
+  <div class="section">
+    <h2 class="section-title">How It Works</h2>
+    <p class="section-subtitle">Four simple steps to start earning with SkillForge</p>
+    <div class="hiw-card">
+      <div class="hiw-num">1</div>
+      <h3>Choose a Package</h3>
+      <p>Select from Basic (₦1,000) to Elite (₦10,000). Each unlocks different earning potential.</p>
+    </div>
+    <div class="hiw-card">
+      <div class="hiw-num">2</div>
+      <h3>Make Payment</h3>
+      <p>Pay to our verified account, upload your receipt, and wait for admin approval.</p>
+    </div>
+    <div class="hiw-card">
+      <div class="hiw-num">3</div>
+      <h3>Complete Tasks & Refer</h3>
+      <p>Do simple social media tasks daily and invite friends to earn commissions.</p>
+    </div>
+    <div class="hiw-card">
+      <div class="hiw-num">4</div>
+      <h3>Withdraw Earnings</h3>
+      <p>Request withdrawals directly to your bank when you hit your package minimum.</p>
+    </div>
+  </div>
+  <div class="section" id="packages-section" style="background:var(--off-white);">
+    <h2 class="section-title">Choose Your Package</h2>
+    <p class="section-subtitle">Select the package that fits your goals</p>
+    <div class="earn-card">
+      <div class="earn-label">Basic Package</div>
+      <div class="earn-amount">₦1,000</div>
+      <div class="earn-desc">Daily Task: ₦200 | Referral: ₦650 | Min Withdraw: ₦3,000</div>
+    </div>
+    <div class="earn-card gold">
+      <div class="earn-label">Standard Package</div>
+      <div class="earn-amount">₦3,000</div>
+      <div class="earn-desc">Daily Task: ₦600 | Referral: ₦2,000 | Min Withdraw: ₦9,000</div>
+    </div>
+    <div class="earn-card">
+      <div class="earn-label">Premium Package</div>
+      <div class="earn-amount">₦5,000</div>
+      <div class="earn-desc">Daily Task: ₦1,000 | Referral: ₦3,000 | Min Withdraw: ₦15,000</div>
+    </div>
+    <div class="earn-card gold">
+      <div class="earn-label">Elite Package</div>
+      <div class="earn-amount">₦10,000</div>
+      <div class="earn-desc">Daily Task: ₦1,500 | Referral: ₦7,500 | Min Withdraw: ₦22,500</div>
+    </div>
+  </div>
+  <div class="site-footer">
+    <div class="sf-logo"><div class="sf-icon"></div><span class="sf-text">SkillForge</span></div>
+    <p>Learn. Connect. Grow. Together. &copy; 2026 SkillForge. All rights reserved.</p>
+  </div>
+</div>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div class="page" id="page-login">
+  <nav class="landing-nav">
+    <a href="#" class="logo" onclick="showLanding();return false;">
+      <div class="logo-icon"></div>
+      <span class="logo-text">SkillForge</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-link" onclick="showLanding();return false;">Home</a>
+      <a href="#" class="nav-link" onclick="showPage('register');return false;">Join</a>
+      <a href="#" class="nav-active" onclick="showPage('login');return false;">Login</a>
+    </div>
+  </nav>
+  <div class="auth-page">
+    <div class="auth-card fade-in">
+      <div class="auth-logo"></div>
+      <h2>Welcome Back</h2>
+      <p class="auth-sub">Login to your SkillForge dashboard</p>
+      <div class="form-group">
+        <label class="form-label">Phone Number or Email</label>
+        <input type="text" class="form-input" id="loginId" placeholder="e.g. 08012345678 or you@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" id="loginPassword" placeholder="Your password">
+      </div>
+      <button class="btn-green" onclick="doLogin()"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <div class="auth-footer">
+        <a onclick="showForgotModal()" style="display:block;margin-bottom:8px;">Forgot Password?</a>
+        New here? <a onclick="showPage('register')">Create account</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== FORGOT PASSWORD PAGE ==================== -->
+<div class="page" id="page-forgot">
+  <nav class="landing-nav">
+    <a href="#" class="logo" onclick="showLanding();return false;">
+      <div class="logo-icon"></div>
+      <span class="logo-text">SkillForge</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-link" onclick="showLanding();return false;">Home</a>
+      <a href="#" class="nav-link" onclick="showPage('register');return false;">Join</a>
+      <a href="#" class="nav-link" onclick="showPage('login');return false;">Login</a>
+    </div>
+  </nav>
+  <div class="auth-page">
+    <div class="auth-card fade-in">
+      <div class="auth-logo"></div>
+      <h2>Reset Password</h2>
+      <p class="auth-sub">Enter your email to receive a reset code</p>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" id="fpEmail" placeholder="you@example.com">
+      </div>
+      <button class="btn-green" onclick="sendResetCode()"><i class="fas fa-paper-plane"></i> Send Reset Code</button>
+      <div class="auth-footer">
+        Remember your password? <a onclick="showPage('login')">Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== VERIFY CODE PAGE ==================== -->
+<div class="page" id="page-verify">
+  <nav class="landing-nav">
+    <a href="#" class="logo" onclick="showLanding();return false;">
+      <div class="logo-icon"></div>
+      <span class="logo-text">SkillForge</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-link" onclick="showLanding();return false;">Home</a>
+      <a href="#" class="nav-link" onclick="showPage('register');return false;">Join</a>
+      <a href="#" class="nav-link" onclick="showPage('login');return false;">Login</a>
+    </div>
+  </nav>
+  <div class="auth-page">
+    <div class="auth-card fade-in">
+      <div class="auth-logo"></div>
+      <h2>Verify Code</h2>
+      <p class="auth-sub">Enter the 6-digit code sent to your email</p>
+      <div class="form-group">
+        <label class="form-label">Reset Code</label>
+        <input type="text" class="form-input" id="fpCodeInput" placeholder="123456" maxlength="6">
+      </div>
+      <button class="btn-green" onclick="verifyResetCode()"><i class="fas fa-check"></i> Verify Code</button>
+      <div class="auth-footer">
+        Didn't receive code? <a onclick="sendResetCode()">Resend</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== NEW PASSWORD PAGE ==================== -->
+<div class="page" id="page-newpass">
+  <nav class="landing-nav">
+    <a href="#" class="logo" onclick="showLanding();return false;">
+      <div class="logo-icon"></div>
+      <span class="logo-text">SkillForge</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-link" onclick="showLanding();return false;">Home</a>
+      <a href="#" class="nav-link" onclick="showPage('register');return false;">Join</a>
+      <a href="#" class="nav-link" onclick="showPage('login');return false;">Login</a>
+    </div>
+  </nav>
+  <div class="auth-page">
+    <div class="auth-card fade-in">
+      <div class="auth-logo"></div>
+      <h2>Set New Password</h2>
+      <p class="auth-sub">Create a new password for your account</p>
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input type="password" class="form-input" id="fpNewPass" placeholder="Min 6 characters">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input type="password" class="form-input" id="fpConfirmPass" placeholder="Re-enter password">
+      </div>
+      <button class="btn-green" onclick="setNewPassword()"><i class="fas fa-lock"></i> Update Password</button>
+      <div class="auth-footer">
+        <a onclick="showPage('login')">Back to Login</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== REGISTER PAGE (NEW FLOW) ==================== -->
+<div class="page" id="page-register">
+  <nav class="landing-nav">
+    <a href="#" class="logo" onclick="showLanding();return false;">
+      <div class="logo-icon"></div>
+      <span class="logo-text">SkillForge</span>
+    </a>
+    <div class="nav-links">
+      <a href="#" class="nav-link" onclick="showLanding();return false;">Home</a>
+      <a href="#" class="nav-active" onclick="showPage('register');return false;">Join</a>
+      <a href="#" class="nav-link" onclick="showPage('login');return false;">Login</a>
+    </div>
+  </nav>
+  <div class="auth-page">
+    <div class="auth-card fade-in" id="regCard">
+      <div class="auth-logo"></div>
+
+      <!-- STEP 0: Check Phone -->
+      <div id="regStep0">
+        <h2>Join SkillForge</h2>
+        <p class="auth-sub">Enter your phone number to get started</p>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" id="regCheckPhone" placeholder="08012345678">
+        </div>
+        <button class="btn-green" onclick="checkRegPhone()"><i class="fas fa-arrow-right"></i> Continue</button>
+        <div class="auth-footer">
+          Already have an account? <a onclick="showPage('login')">Login now</a>
+        </div>
+      </div>
+
+      <!-- STEP 1: Package Selection (not approved yet) -->
+      <div id="regStep1" style="display:none;">
+        <div class="step-indicator">
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+          <div class="step-dot"></div>
+        </div>
+        <h2>Select a Package</h2>
+        <p class="auth-sub">Choose your earning plan</p>
+        <div class="pkg-card" onclick="selectRegPkg(this,'basic')" data-pkg="basic">
+          <div class="pkg-name">Basic</div>
+          <div class="pkg-price">₦1,000</div>
+          <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦200</div>
+          <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦650</div>
+          <div class="pkg-detail"><i class="fas fa-wallet"></i> Min Withdrawal: ₦3,000</div>
+        </div>
+        <div class="pkg-card" onclick="selectRegPkg(this,'standard')" data-pkg="standard">
+          <div class="pkg-name">Standard</div>
+          <div class="pkg-price">₦3,000</div>
+          <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦600</div>
+          <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦2,000</div>
+          <div class="pkg-detail"><i class="fas fa-wallet"></i> Min Withdrawal: ₦9,000</div>
+        </div>
+        <div class="pkg-card" onclick="selectRegPkg(this,'premium')" data-pkg="premium">
+          <div class="pkg-name">Premium</div>
+          <div class="pkg-price">₦5,000</div>
+          <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦1,000</div>
+          <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦3,000</div>
+          <div class="pkg-detail"><i class="fas fa-wallet"></i> Min Withdrawal: ₦15,000</div>
+        </div>
+        <div class="pkg-card" onclick="selectRegPkg(this,'elite')" data-pkg="elite">
+          <div class="pkg-name">Elite</div>
+          <div class="pkg-price">₦10,000</div>
+          <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦1,500</div>
+          <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦7,500</div>
+          <div class="pkg-detail"><i class="fas fa-wallet"></i> Min Withdrawal: ₦22,500</div>
+        </div>
+        <button class="btn-green" id="btnGoPay" onclick="goToPayment()" disabled style="opacity:0.5;"><i class="fas fa-arrow-right"></i> Proceed to Payment</button>
+        <div class="auth-footer">
+          <a onclick="resetRegFlow()">Use a different phone number</a>
+        </div>
+      </div>
+
+      <!-- STEP 2: Payment Details + Timer -->
+      <div id="regStep2" style="display:none;">
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-dot active"></div>
+          <div class="step-dot"></div>
+        </div>
+        <h2>Complete Payment</h2>
+        <p class="auth-sub">Transfer the exact amount within 30 minutes</p>
+
+        <div class="timer-box">
+          <div class="timer-label">Time Remaining</div>
+          <div class="timer-display" id="payTimer">30:00</div>
+        </div>
+
+        <div class="deposit-bank">
+          <div class="db-row"><span class="db-label">Bank Name</span><span class="db-value">Moremonee MFB</span></div>
+          <div class="db-row"><span class="db-label">Account Number</span><span class="db-value" style="font-size:18px;letter-spacing:2px;">9036547984</span></div>
+          <div class="db-row"><span class="db-label">Account Name</span><span class="db-value">SAMUEL CHIBUIKE</span></div>
+          <div class="db-row"><span class="db-label">Amount to Pay</span><span class="db-value" id="payAmount" style="color:var(--gold);font-size:20px;">₦0</span></div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Upload Payment Receipt</label>
+          <div class="proof-upload" onclick="document.getElementById('regProofInput').click()">
+            <i class="fas fa-receipt"></i>
+            <p>Tap to upload your payment receipt</p>
+            <img class="proof-preview" id="regProofPreview" alt="Preview">
+          </div>
+          <input type="file" id="regProofInput" accept="image/*" style="display:none;" onchange="handleRegProof(this)">
+        </div>
+
+        <button class="btn-green" id="btnSubmitPay" onclick="submitPayment()" disabled style="opacity:0.5;"><i class="fas fa-check"></i> I Have Completed Payment</button>
+        <div class="auth-footer">
+          <a onclick="resetRegFlow()">Cancel and start over</a>
+        </div>
+      </div>
+
+      <!-- STEP 3: Pending Review -->
+      <div id="regStep3" style="display:none;">
+        <div class="modal-icon" style="margin:20px auto;"><i class="fas fa-clock"></i></div>
+        <h2>Payment Under Review</h2>
+        <p class="auth-sub">Your payment has been submitted and is being reviewed by our admin team. You will be able to complete your registration once approved.</p>
+        <div class="review-note">
+          <i class="fas fa-info-circle"></i> This usually takes a few minutes. Please check back later or refresh this page.
+        </div>
+        <button class="btn-green" onclick="checkRegStatusAgain()" style="margin-top:20px;"><i class="fas fa-sync-alt"></i> Check Status</button>
+        <div class="auth-footer">
+          <a onclick="showPage('login')">Already approved? Login here</a>
+        </div>
+      </div>
+
+      <!-- STEP 4: Registration Form (after approval) -->
+      <div id="regStep4" style="display:none;">
+        <div class="step-indicator">
+          <div class="step-dot done"></div>
+          <div class="step-dot done"></div>
+          <div class="step-dot active"></div>
+        </div>
+        <h2>Complete Registration</h2>
+        <p class="auth-sub">Your <span id="regApprovedPkg" style="color:var(--green);font-weight:700;">package</span> has been approved!</p>
+        <div style="background:linear-gradient(135deg,rgba(212,175,55,0.1),rgba(212,175,55,0.2));border-radius:16px;padding:14px 18px;margin-bottom:20px;text-align:center;border:1px solid var(--gold-light);">
+          <div style="font-size:12px;color:var(--text-light);">Phone Number</div>
+          <div style="font-size:16px;font-weight:700;color:var(--green);font-family:monospace;" id="regApprovedPhone">080xxxxxxx</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" id="regName" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-input" id="regEmail" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Create Password</label>
+          <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" class="form-input" id="regPassword2" placeholder="Confirm password">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Referrer Code (Optional)</label>
+          <input type="text" class="form-input" id="regRef" placeholder="Enter referrer's code" style="text-transform:uppercase;">
+        </div>
+        <button class="btn-green" onclick="doRegister()"><i class="fas fa-user-plus"></i> Create Account</button>
+        <div class="auth-footer">
+          Already have an account? <a onclick="showPage('login')">Login now</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== DASHBOARD ==================== -->
+<div class="page" id="page-dashboard">
+  <div class="dash-hero">
+    <div class="welcome">Welcome back,</div>
+    <div class="name" id="dashName">User</div>
+    <div style="font-size:12px;opacity:0.7;margin-bottom:12px;" id="dashPackage">No active package</div>
+    <div class="dash-wallets">
+      <div class="dash-wallet"><div class="wl">Available</div><div class="wa" id="dashAvail">₦0</div></div>
+      <div class="dash-wallet"><div class="wl">Pending</div><div class="wa" id="dashPending">₦0</div></div>
+      <div class="dash-wallet"><div class="wl">Total Earned</div><div class="wa" id="dashTotal">₦0</div></div>
+    </div>
+  </div>
+  <div class="qa-grid">
+    <button class="qa-item gold" onclick="goTo('deposit')"><i class="fas fa-plus-circle"></i><span>Upgrade</span></button>
+    <button class="qa-item" onclick="goTo('tasks')"><i class="fas fa-tasks"></i><span>Tasks</span></button>
+    <button class="qa-item gold" onclick="goTo('referrals')"><i class="fas fa-users"></i><span>Refer</span></button>
+    <button class="qa-item" onclick="goTo('withdraw')"><i class="fas fa-wallet"></i><span>Cashout</span></button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-chart-line"></i> Your Stats</div>
+    <div class="stat-row"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h4>Total Referrals</h4><p id="dashRefs">0</p></div></div>
+    <div class="stat-row"><div class="stat-icon"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h4>Tasks Completed</h4><p id="dashTasks">0</p></div></div>
+    <div class="stat-row"><div class="stat-icon"><i class="fas fa-money-bill-wave"></i></div><div class="stat-info"><h4>Total Withdrawn</h4><p id="dashWithdrawn">₦0</p></div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-history"></i> Recent Transactions</div>
+    <div id="dashTxList"></div>
+  </div>
+</div>
+
+<!-- ==================== DEPOSIT (UPGRADE) PAGE ==================== -->
+<div class="page" id="page-deposit">
+  <div class="card">
+    <div class="card-title"><i class="fas fa-plus-circle"></i> Upgrade Your Package</div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Select a higher package to increase your earning potential. Your current package will be replaced.</p>
+    <div id="depPkgList">
+      <div class="pkg-card" onclick="selectDepPkg(this,'basic')" data-pkg="basic">
+        <div class="pkg-name">Basic</div>
+        <div class="pkg-price">₦1,000</div>
+        <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦200</div>
+        <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦650</div>
+      </div>
+      <div class="pkg-card" onclick="selectDepPkg(this,'standard')" data-pkg="standard">
+        <div class="pkg-name">Standard</div>
+        <div class="pkg-price">₦3,000</div>
+        <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦600</div>
+        <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦2,000</div>
+      </div>
+      <div class="pkg-card" onclick="selectDepPkg(this,'premium')" data-pkg="premium">
+        <div class="pkg-name">Premium</div>
+        <div class="pkg-price">₦5,000</div>
+        <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦1,000</div>
+        <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦3,000</div>
+      </div>
+      <div class="pkg-card" onclick="selectDepPkg(this,'elite')" data-pkg="elite">
+        <div class="pkg-name">Elite</div>
+        <div class="pkg-price">₦10,000</div>
+        <div class="pkg-detail"><i class="fas fa-tasks"></i> Daily Task: ₦1,500</div>
+        <div class="pkg-detail"><i class="fas fa-users"></i> Referral: ₦7,500</div>
+      </div>
+    </div>
+  </div>
+  <div class="card" id="depForm" style="display:none;">
+    <div class="card-title"><i class="fas fa-university"></i> Payment Details</div>
+    <div class="deposit-bank">
+      <div class="db-row"><span class="db-label">Bank Name</span><span class="db-value">Moremonee MFB</span></div>
+      <div class="db-row"><span class="db-label">Account Number</span><span class="db-value" style="font-size:18px;letter-spacing:2px;">9036547984</span></div>
+      <div class="db-row"><span class="db-label">Account Name</span><span class="db-value">SAMUEL CHIBUIKE</span></div>
+      <div class="db-row"><span class="db-label">Amount to Pay</span><span class="db-value" id="depAmount" style="color:var(--gold);font-size:20px;">₦0</span></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Upload Payment Screenshot</label>
+      <div class="proof-upload" onclick="document.getElementById('depProofInput').click()">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Tap to upload payment proof</p>
+        <img class="proof-preview" id="depProofPreview" alt="Preview">
+      </div>
+      <input type="file" id="depProofInput" accept="image/*" style="display:none;" onchange="handleDepProof(this)">
+    </div>
+    <button class="btn-green" id="btnSubmitDep" onclick="submitDeposit()" disabled style="opacity:0.5;"><i class="fas fa-check"></i> I Have Completed Payment</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-history"></i> My Deposits</div>
+    <div id="myDepositsList"></div>
+  </div>
+</div>
+
+<!-- ==================== TASKS ==================== -->
+<div class="page" id="page-tasks">
+  <div class="card" id="taskNoPkg" style="display:none;">
+    <div class="empty">
+      <i class="fas fa-lock"></i>
+      <h4>No Active Package</h4>
+      <p>You need an active package to access tasks. <a onclick="goTo('deposit')" style="color:var(--green);font-weight:600;">Activate a package</a></p>
+    </div>
+  </div>
+  <div id="taskContent">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-tasks"></i> Social Media Tasks</div>
+      <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Visit our social media pages, follow/subscribe, then upload a screenshot as proof to earn your reward.</p>
+      <div id="socialTaskList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-history"></i> My Submissions</div>
+      <div id="mySocialSubmissionsList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SOCIAL TASK DETAIL ==================== -->
+<div class="page" id="page-socialtaskdetail">
+  <div class="task-detail">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+      <div id="stdIcon" style="width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:24px;color:white;"><i class="fab fa-youtube"></i></div>
+      <div>
+        <h3 id="stdTitle" style="margin-bottom:2px;">YouTube</h3>
+        <p id="stdPlatform" style="font-size:12px;color:var(--text-light);margin:0;">Subscribe to our channel</p>
+      </div>
+    </div>
+    <div style="margin-bottom:12px;">
+      <span style="font-size:12px;color:var(--text-light);">Your Reward: </span>
+      <span style="font-size:18px;font-weight:700;color:var(--gold-dark);font-family:Playfair Display,serif;" id="stdReward">₦0</span>
+    </div>
+    <div style="margin-bottom:16px;">
+      <a href="#" id="stdLink" target="_blank" style="display:inline-block;background:var(--green);color:white;padding:10px 20px;border-radius:12px;text-decoration:none;font-size:13px;"><i class="fas fa-external-link-alt"></i> Open Link & Complete</a>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Upload Proof Screenshot</label>
+      <div class="proof-upload" onclick="document.getElementById('socialProofInput').click()">
+        <i class="fas fa-camera"></i>
+        <p>Tap to upload proof screenshot</p>
+        <img class="proof-preview" id="socialProofPreview" alt="Preview">
+      </div>
+      <input type="file" id="socialProofInput" accept="image/*" style="display:none;" onchange="handleSocialProof(this)">
+    </div>
+    <button class="btn-green" onclick="submitSocialTaskProof()"><i class="fas fa-paper-plane"></i> Submit Task</button>
+    <button class="btn-green" onclick="goTo('tasks')" style="background:var(--text-light);margin-top:10px;"><i class="fas fa-arrow-left"></i> Back to Tasks</button>
+  </div>
+</div>
+
+<!-- ==================== REFERRALS ==================== -->
+<div class="page" id="page-referrals">
+  <div class="ref-box">
+    <h4>Your Referral Code</h4>
+    <div class="ref-code" id="refCode">FORGE-XXXXX</div><br>
+    <button class="ref-copy" onclick="copyRef()" style="margin-bottom:10px;"><i class="fas fa-copy"></i> Copy Code</button><br>
+    <button class="ref-copy" onclick="shareWhatsApp()" style="background:#25D366;"><i class="fab fa-whatsapp"></i> Share on WhatsApp</button>
+  </div>
+  <div class="ref-grid">
+    <div class="ref-box-sm"><h5>Direct Referrals</h5><p id="refCount">0</p><div style="font-size:11px;color:var(--text-light);margin-top:4px;">People you invited</div></div>
+    <div class="ref-box-sm"><h5>Ref Earnings</h5><p id="refEarnings">₦0</p><div style="font-size:11px;color:var(--text-light);margin-top:4px;">Total from referrals</div></div>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-link"></i> Referral Link</div>
+    <div style="background:var(--off-white);padding:14px 16px;border-radius:16px;font-size:12px;word-break:break-all;margin-bottom:12px;font-family:monospace;" id="refLink">https://skillforge.app/ref/FORGE-XXXXX</div>
+    <button class="btn-green" onclick="copyLink()" style="width:auto;padding:10px 20px;font-size:13px;border-radius:12px;"><i class="fas fa-copy"></i> Copy Link</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-users"></i> My Team</div>
+    <div id="teamList"></div>
+  </div>
+</div>
+
+<!-- ==================== WITHDRAW ==================== -->
+<div class="page" id="page-withdraw">
+  <div class="tab-bar" style="margin-bottom:16px;">
+    <button class="active" id="tabTaskWd" onclick="switchWdTab('task')">Task Earnings</button>
+    <button id="tabRefWd" onclick="switchWdTab('ref')">Referral Earnings</button>
+  </div>
+
+  <!-- Task Earnings Withdrawal -->
+  <div id="wdTaskPanel">
+    <div class="with-card">
+      <div class="with-bal"><h4>Task Earnings</h4><p id="wTaskBal">₦0</p></div>
+      <div class="with-min" id="wTaskMinText">Minimum withdrawal: ₦3,000</div>
+      <div id="wTaskStatus" class="with-status closed"><i class="fas fa-lock"></i> Task Withdrawal Portal: CLOSED</div>
+      <div class="form-group"><label class="form-label">Amount (₦)</label><input type="number" class="form-input" id="wTaskAmt" placeholder="Enter amount"></div>
+      <div class="form-group"><label class="form-label">Account Number</label><input type="text" class="form-input" id="wTaskAcc" placeholder="Enter account number"></div>
+      <div class="form-group"><label class="form-label">Bank Name</label><input type="text" class="form-input" id="wTaskBank" placeholder="e.g. First Bank"></div>
+      <div class="form-group"><label class="form-label">Account Name</label><input type="text" class="form-input" id="wTaskAccName" placeholder="Account holder name"></div>
+      <button class="btn-gold" id="btnTaskWithdraw" onclick="submitTaskWithdrawal()" style="color:var(--green-dark);"><i class="fas fa-money-bill-wave"></i> Request Task Withdrawal</button>
+    </div>
+  </div>
+
+  <!-- Referral Earnings Withdrawal -->
+  <div id="wdRefPanel" style="display:none;">
+    <div class="with-card">
+      <div class="with-bal"><h4>Referral Earnings</h4><p id="wRefBal">₦0</p></div>
+      <div class="with-min" id="wRefMinText">Minimum withdrawal: ₦3,000</div>
+      <div id="wRefStatus" class="with-status closed"><i class="fas fa-lock"></i> Referral Withdrawal Portal: CLOSED</div>
+      <div class="form-group"><label class="form-label">Amount (₦)</label><input type="number" class="form-input" id="wRefAmt" placeholder="Enter amount"></div>
+      <div class="form-group"><label class="form-label">Account Number</label><input type="text" class="form-input" id="wRefAcc" placeholder="Enter account number"></div>
+      <div class="form-group"><label class="form-label">Bank Name</label><input type="text" class="form-input" id="wRefBank" placeholder="e.g. First Bank"></div>
+      <div class="form-group"><label class="form-label">Account Name</label><input type="text" class="form-input" id="wRefAccName" placeholder="Account holder name"></div>
+      <button class="btn-gold" id="btnRefWithdraw" onclick="submitRefWithdrawal()" style="color:var(--green-dark);"><i class="fas fa-money-bill-wave"></i> Request Referral Withdrawal</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><i class="fas fa-history"></i> Withdrawal History</div>
+    <div id="myWithdrawalsList"></div>
+  </div>
+</div>
+
+<!-- ==================== PROFILE ==================== -->
+<div class="page" id="page-profile">
+  <div class="card" style="text-align:center;padding:40px 24px;">
+    <div style="width:80px;height:80px;background:linear-gradient(135deg,var(--green),var(--green-light));border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:white;"><i class="fas fa-user"></i></div>
+    <h2 id="profName" style="font-family:Playfair Display,serif;font-size:22px;font-weight:700;color:var(--green);">User</h2>
+    <p id="profPhone" style="font-size:13px;color:var(--text-light);margin-top:4px;">080xxxxxxx</p>
+    <p id="profEmail" style="font-size:12px;color:var(--text-light);margin-top:2px;">email@example.com</p>
+    <p id="profPkg" style="font-size:13px;color:var(--gold-dark);font-weight:600;margin-top:10px;background:rgba(212,175,55,0.1);display:inline-block;padding:6px 18px;border-radius:50px;">No Package</p>
+    <p id="profCode" style="font-size:12px;color:var(--green);font-weight:600;margin-top:8px;font-family:monospace;">FORGE-XXXXX</p>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-wallet"></i> Wallet Balances</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div style="background:linear-gradient(135deg,var(--green),var(--green-light));color:white;padding:18px 8px;border-radius:16px;text-align:center;"><div style="font-size:11px;opacity:0.8;">Available</div><div style="font-size:16px;font-weight:700;margin-top:6px;" id="pAvail">₦0</div></div>
+      <div style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--green-dark);padding:18px 8px;border-radius:16px;text-align:center;"><div style="font-size:11px;opacity:0.8;">Pending</div><div style="font-size:16px;font-weight:700;margin-top:6px;" id="pPending">₦0</div></div>
+    </div>
+  </div>
+  <div class="card" id="adminPanelLink" style="display:none;">
+    <div class="card-title"><i class="fas fa-shield-alt"></i> Admin Panel</div>
+    <button class="btn-green" onclick="goTo('admin')" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--green-dark);"><i class="fas fa-cog"></i> Open Admin Dashboard</button>
+  </div>
+  <div class="card">
+    <div class="card-title"><i class="fas fa-cog"></i> Settings</div>
+    <button class="btn-green" onclick="doLogout()" style="background:#ef4444;"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</div>
+
+<!-- ==================== ADMIN ==================== -->
+<div class="page" id="page-admin">
+
+  <!-- Admin Header -->
+  <div class="dash-hero" style="margin-bottom:20px;">
+    <div class="welcome">Admin Dashboard</div>
+    <div class="name">SkillForge Control Center</div>
+    <div style="font-size:12px;opacity:0.7;">Manage users, tasks, withdrawals & more</div>
+  </div>
+
+  <!-- Quick Stats -->
+  <div class="admin-grid">
+    <div class="admin-box"><h5>Total Users</h5><p id="aUsers">0</p></div>
+    <div class="admin-box"><h5>Active Today</h5><p id="aOnline">0</p></div>
+    <div class="admin-box"><h5>Pending Registrations</h5><p id="aPenReg">0</p></div>
+    <div class="admin-box"><h5>Pending Withdrawals</h5><p id="aPenWd">0</p></div>
+  </div>
+
+  <!-- Portal Controls -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-toggle-on"></i> Withdrawal Portals</div>
+    <div style="padding:12px 0;border-bottom:1px solid #f3f4f6;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:15px;font-weight:600;">Task Earnings Withdrawal</div>
+          <div style="font-size:12px;color:var(--text-light);margin-top:2px;" id="portalTaskStatusText">Portal is CLOSED</div>
+        </div>
+        <button class="btn-green" id="portalTaskToggleBtn" onclick="toggleTaskWithdrawalPortal()" style="width:auto;padding:10px 20px;font-size:13px;border-radius:12px;"><i class="fas fa-lock"></i> Open</button>
+      </div>
+    </div>
+    <div style="padding:12px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:15px;font-weight:600;">Referral Earnings Withdrawal</div>
+          <div style="font-size:12px;color:var(--text-light);margin-top:2px;" id="portalRefStatusText">Portal is CLOSED</div>
+        </div>
+        <button class="btn-green" id="portalRefToggleBtn" onclick="toggleRefWithdrawalPortal()" style="width:auto;padding:10px 20px;font-size:13px;border-radius:12px;"><i class="fas fa-lock"></i> Open</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Task Management -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-tasks"></i> Task Management</div>
+    <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;">Add social media tasks for users to complete. Toggle each platform on/off.</p>
+
+    <div id="adminTaskForm">
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-youtube" style="color:#FF0000;margin-right:6px;"></i> YouTube Channel Link</label>
+        <input type="url" class="form-input" id="st_youtube" placeholder="https://youtube.com/channel/...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_youtube_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-tiktok" style="color:#000;margin-right:6px;"></i> TikTok Profile Link</label>
+        <input type="url" class="form-input" id="st_tiktok" placeholder="https://tiktok.com/@...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_tiktok_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-instagram" style="color:#E4405F;margin-right:6px;"></i> Instagram Profile Link</label>
+        <input type="url" class="form-input" id="st_instagram" placeholder="https://instagram.com/...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_instagram_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-facebook-f" style="color:#1877F2;margin-right:6px;"></i> Facebook Page Link</label>
+        <input type="url" class="form-input" id="st_facebook" placeholder="https://facebook.com/...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_facebook_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-x-twitter" style="color:#000;margin-right:6px;"></i> Twitter/X Profile Link</label>
+        <input type="url" class="form-input" id="st_twitter" placeholder="https://x.com/...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_twitter_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-whatsapp" style="color:#25D366;margin-right:6px;"></i> WhatsApp Group Link</label>
+        <input type="url" class="form-input" id="st_whatsapp" placeholder="https://chat.whatsapp.com/...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_whatsapp_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fab fa-telegram" style="color:#0088cc;margin-right:6px;"></i> Telegram Channel Link</label>
+        <input type="url" class="form-input" id="st_telegram" placeholder="https://t.me/...">
+        <label style="display:flex;align-items:center;gap:8px;margin-top:8px;font-size:12px;color:var(--text-light);">
+          <input type="checkbox" id="st_telegram_active" checked style="width:16px;height:16px;"> Active
+        </label>
+      </div>
+    </div>
+    <button class="btn-green" onclick="adminSaveSocialTasks()" style="margin-bottom:12px;"><i class="fas fa-save"></i> Save Social Links</button>
+    <div id="socialTaskStatus" style="display:none;padding:10px 14px;border-radius:12px;font-size:13px;margin-bottom:12px;"></div>
+  </div>
+
+  <!-- Pending Registrations -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-user-clock"></i> Pending Registrations</div>
+    <div class="req-list" id="aPenRegList"></div>
+  </div>
+
+  <!-- Pending Deposits -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-university"></i> Pending Deposits</div>
+    <div class="req-list" id="aDepList"></div>
+  </div>
+
+  <!-- Pending Social Task Submissions -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-clipboard-check"></i> Pending Task Submissions</div>
+    <div id="adminSocialSubList"></div>
+  </div>
+
+  <!-- Withdrawal Requests -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-money-bill-wave"></i> Withdrawal Requests</div>
+    <div class="req-list" id="aWdList"></div>
+  </div>
+
+  <!-- All Users -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-users"></i> All Users</div>
+    <div class="req-list" id="aUserList"></div>
+  </div>
+
+  <!-- Referral Overview -->
+  <div class="card">
+    <div class="card-title"><i class="fas fa-sitemap"></i> Referral Overview</div>
+    <div id="adminRefList"></div>
+  </div>
+
+</div><!-- ==================== JAVASCRIPT ==================== -->
+<script>
+/* SKILLFORGE v2.0 - Fixed */
+window._sfLoaded = true;
+
+// ==================== FIREBASE CONFIG ====================
+const firebaseConfig = {
+  apiKey: "AIzaSyAY3t3E-gtPJrzyNlRzICd-KBi2d3UiUnU",
+  authDomain: "skillforge-e05c6.firebaseapp.com",
+  databaseURL: "https://skillforge-e05c6-default-rtdb.firebaseio.com",
+  projectId: "skillforge-e05c6",
+  storageBucket: "skillforge-e05c6.firebasestorage.app",
+  messagingSenderId: "577620587958",
+  appId: "1:577620587958:web:176969ed112bc960923d17",
+  measurementId: "G-BPKD2DJ8DM"
+};
+let db = null, auth = null;
+let firebaseConnected = false;
+
+// Real-time local database with listener support
+const localDB = {
+  _listeners: {},
+  _getData: function(path) {
+    try {
+      const data = localStorage.getItem('sf_fb_' + path);
+      return data ? JSON.parse(data) : null;
+    } catch(e) { return null; }
+  },
+  _setData: function(path, value) {
+    localStorage.setItem('sf_fb_' + path, JSON.stringify(value));
+    this._trigger(path, value);
+  },
+  _trigger: function(path, value) {
+    // Trigger listeners for this exact path
+    const cbs = this._listeners[path] || [];
+    cbs.forEach(function(cb){
+      try { cb({val: function(){ return value; }}); } catch(e){}
+    });
+    // Trigger parent path listeners too
+    var parts = path.split('/').filter(function(p){ return p; });
+    for(var i = 1; i < parts.length; i++){
+      var parentPath = parts.slice(0, i).join('/');
+      var parentVal = this._getData(parentPath);
+      var parentCbs = this._listeners[parentPath] || [];
+      parentCbs.forEach(function(cb){
+        try { cb({val: function(){ return parentVal; }}); } catch(e){}
+      });
+    }
+  },
+  ref: function(path) {
+    var self = this;
+    return {
+      on: function(event, callback) {
+        if(!self._listeners[path]) self._listeners[path] = [];
+        self._listeners[path].push(callback);
+        // Trigger immediately with current data
+        var data = self._getData(path);
+        callback({val: function(){ return data; }});
+      },
+      off: function() {
+        self._listeners[path] = [];
+      },
+      once: function() {
+        return Promise.resolve({val: function(){ return self._getData(path); }});
+      },
+      set: function(value) {
+        self._setData(path, value);
+        return Promise.resolve();
+      },
+      update: function(updates) {
+        var existing = self._getData(path) || {};
+        for(var k in updates) existing[k] = updates[k];
+        self._setData(path, existing);
+        return Promise.resolve();
+      },
+      push: function() {
+        var key = 'local_' + Date.now() + '_' + Math.random().toString(36).substr(2,6);
+        return {
+          key: key,
+          set: function(value) {
+            var existing = self._getData(path) || {};
+            existing[key] = value;
+            self._setData(path, existing);
+            return Promise.resolve();
+          }
+        };
+      }
+    };
+  }
+};
+
+// Try Firebase first
+try {
+  if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.database();
+    auth = firebase.auth();
+    firebaseConnected = true;
+    console.log('Firebase connected');
+  }
+} catch(e) {
+  console.error('Firebase init error:', e);
+}
+
+// Fallback to localDB if Firebase fails
+if (!db) {
+  console.log('Using localDB fallback');
+  db = localDB;
+}
+if (!auth) {
+  auth = { signInAnonymously: function(){ return Promise.resolve(); }, currentUser: null };
+}
+
+let authReady = false;
+let authInitAttempted = false;
+function initAuth(){
+  if(authInitAttempted) return;
+  authInitAttempted = true;
+  try {
+    auth.signInAnonymously().then(function(){
+      authReady = true;
+      console.log('Firebase auth ready');
+    }).catch(function(err){
+      console.error('Auth error:', err);
+      authReady = true;
+    });
+  } catch(e) {
+    console.error('Auth crash:', e);
+    authReady = true;
+  }
+}
+initAuth();
+
+// Sync local data to Firebase immediately when data changes
+function syncToFirebase(path, value){
+  if(!firebaseConnected) return;
+  try {
+    if(typeof firebase !== 'undefined' && firebase.database) {
+      firebase.database().ref(path).set(value);
+    }
+  } catch(e) {
+    console.log('Firebase sync skipped:', e.message);
+  }
+}
+
+// Listen for storage changes from other tabs (cross-tab sync)
+window.addEventListener('storage', function(e){
+  if(e.key && e.key.startsWith('sf_fb_')){
+    var path = e.key.replace('sf_fb_', '');
+    var value = e.newValue ? JSON.parse(e.newValue) : null;
+    if(localDB._listeners[path]){
+      localDB._listeners[path].forEach(function(cb){
+        try { cb({val: function(){ return value; }}); } catch(err){}
+      });
+    }
+  }
+});
+
+function waitForAuth(callback){
+  callback();
+}
+
+// ==================== CONFIG ====================
+const BASE_URL = 'https://skillforge-u.github.io/SkillForge/';
+const ADMIN_PHONES = ['08131454305', '8131454305'];
+const TELEGRAM_CHANNEL_URL = 'https://t.me/SkillForgeOfficial'; // <-- REPLACE WITH YOUR TELEGRAM CHANNEL LINK
+
+const PACKAGES = {
+  basic:    { name:'Basic',    price:1000,  dailyReward:200,  refCommission:650,  minWithdraw:3000 },
+  standard: { name:'Standard', price:3000,  dailyReward:600,  refCommission:2000, minWithdraw:9000 },
+  premium:  { name:'Premium',  price:5000,  dailyReward:1000, refCommission:3000, minWithdraw:15000 },
+  elite:    { name:'Elite',    price:10000, dailyReward:1500, refCommission:7500, minWithdraw:22500 }
+};
+
+const SOCIAL_PLATFORMS = {
+  youtube:   { name:'YouTube',    icon:'fa-youtube',    color:'#FF0000' },
+  tiktok:    { name:'TikTok',     icon:'fa-music',      color:'#000000' },
+  instagram: { name:'Instagram',  icon:'fa-instagram',  color:'#E4405F' },
+  facebook:  { name:'Facebook',   icon:'fa-facebook-f', color:'#1877F2' },
+  twitter:   { name:'Twitter/X',  icon:'fa-x-twitter',  color:'#000000' },
+  whatsapp:  { name:'WhatsApp',   icon:'fa-whatsapp',   color:'#25D366' },
+  telegram:  { name:'Telegram',   icon:'fa-telegram',   color:'#0088cc' }
+};
+
+// ==================== STATE ====================
+let currentUser = null;
+let isAdmin = false;
+let allTasks = [];
+let allDeposits = [];
+let allWithdrawals = [];
+let allSubmissions = [];
+let allUsers = [];
+let allPendingRegs = [];
+let socialTasks = {};
+let socialSubmissions = [];
+let portalTaskOpen = localStorage.getItem('sf_portal_task') === 'open';
+let portalRefOpen = localStorage.getItem('sf_portal_ref') === 'open';
+let selectedPkg = null;
+let selectedDepPkg = null;
+let currentTaskId = null;
+let taskProofImage = null;
+let depProofImage = null;
+let regProofImage = null;
+let regTimerInterval = null;
+let regPhone = '';
+let regApprovedData = null;
+let firebaseListeners = [];
+
+// ==================== UTILS ====================
+function $(id){ return document.getElementById(id); }
+function toast(msg, type){
+  const box = $('toastBox');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.innerHTML = '<i class="fas fa-info-circle"></i> ' + msg;
+  box.appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateX(-50%) translateY(-20px)'; setTimeout(()=>t.remove(),300); }, 3000);
+}
+function modal(html, icon){
+  $('modalCard').innerHTML = (icon ? '<div class="modal-icon"><i class="fas '+icon+'"></i></div>' : '') + html;
+  $('modalBg').classList.add('on');
+}
+function closeModal(){ $('modalBg').classList.remove('on'); }
+$('modalBg').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+function sanitizePhone(phone){
+  let p = phone.replace(/\D/g,'');
+  if(p.startsWith('0')) p = p.substring(1);
+  if(p.startsWith('234')) p = p.substring(3);
+  return p;
+}
+function getUserKey(phone){ return 'user_' + sanitizePhone(phone); }
+function getPendingRegKey(phone){ return 'pending_' + sanitizePhone(phone); }
+function fmtN(n){ return '\u20A6' + (n||0).toLocaleString(); }
+function fmtDate(d){ if(!d) return ''; const x=new Date(d); return x.toLocaleDateString()+' '+x.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }
+
+// ==================== NAVIGATION ====================
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = $('page-' + name);
+  if(target) target.classList.add('active');
+  const body = document.body;
+  body.classList.remove('landing','auth');
+  if(name === 'landing') body.classList.add('landing');
+  else if(['login','register','forgot','verify','newpass'].includes(name)) body.classList.add('auth');
+  window.scrollTo(0,0);
+
+  if(name === 'register'){
+    resetRegFlow();
+    const pendingRef = localStorage.getItem('sf_pending_ref');
+    if(pendingRef){
+      const refInput = $('regRef');
+      if(refInput && !refInput.value) refInput.value = pendingRef;
+    }
+  }
+}
+function showLanding(){ showPage('landing'); }
+function goTo(page){
+  if(!currentUser && page !== 'landing'){
+    toast('Please login first','err');
+    showPage('login');
+    return;
+  }
+  showPage(page);
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  if(page === 'dashboard') $('navHome').classList.add('active');
+  if(page === 'tasks') $('navTask').classList.add('active');
+  if(page === 'referrals') $('navRefer').classList.add('active');
+  if(page === 'withdraw') $('navWithdraw').classList.add('active');
+  if(page === 'admin') $('navAdmin').classList.add('active');
+  if(page === 'dashboard') loadDashboard();
+  if(page === 'tasks') loadTasks();
+  if(page === 'referrals') loadReferrals();
+  if(page === 'withdraw') loadWithdraw();
+  if(page === 'deposit') loadDeposit();
+  if(page === 'profile') loadProfile();
+  if(page === 'admin') loadAdmin();
+}
+
+// ==================== REGISTRATION FLOW ====================
+function resetRegFlow(){
+  clearInterval(regTimerInterval);
+  regTimerInterval = null;
+  selectedPkg = null;
+  regProofImage = null;
+  regPhone = '';
+  regApprovedData = null;
+  $('regStep0').style.display = 'block';
+  $('regStep1').style.display = 'none';
+  $('regStep2').style.display = 'none';
+  $('regStep3').style.display = 'none';
+  $('regStep4').style.display = 'none';
+  $('regCheckPhone').value = '';
+  document.querySelectorAll('#regStep1 .pkg-card').forEach(c => c.classList.remove('selected'));
+  $('btnGoPay').disabled = true;
+  $('btnGoPay').style.opacity = '0.5';
+  $('regProofPreview').style.display = 'none';
+  $('regProofInput').value = '';
+  $('regName').value = '';
+  $('regEmail').value = '';
+  $('regPassword').value = '';
+  $('regPassword2').value = '';
+  $('regRef').value = '';
+}
+
+function checkRegPhone(){
+  const phone = $('regCheckPhone').value.trim();
+  if(!phone || phone.length < 10){ toast('Please enter a valid phone number','err'); return; }
+  regPhone = phone;
+
+  // Check if already registered
+  try {
+    const allUsers = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+    if(allUsers[getUserKey(phone)]){
+      toast('This number is already registered. Please login.','warn');
+      setTimeout(function(){ showPage('login'); }, 1500);
+      return;
+    }
+  } catch(e) { console.log('Local user check error', e); }
+
+  // Check local pending registrations first (offline support)
+  try {
+    const localPending = JSON.parse(localStorage.getItem('sf_pending_regs') || '{}');
+    const localReg = localPending[getPendingRegKey(phone)];
+    if(localReg && localReg.status === 'approved'){
+      regApprovedData = localReg;
+      $('regStep0').style.display = 'none';
+      $('regStep4').style.display = 'block';
+      $('regApprovedPkg').textContent = (PACKAGES[localReg.package] && PACKAGES[localReg.package].name) || localReg.package;
+      $('regApprovedPhone').textContent = phone;
+      const pendingRef = localStorage.getItem('sf_pending_ref');
+      if(pendingRef) $('regRef').value = pendingRef;
+      toast('Your payment is approved! Complete your registration.','ok');
+      return;
+    } else if(localReg && localReg.status === 'pending'){
+      $('regStep0').style.display = 'none';
+      $('regStep3').style.display = 'block';
+      toast('Your payment is still under review.','warn');
+      return;
+    }
+  } catch(e) { console.log('Local pending check error', e); }
+
+  // PROCEED IMMEDIATELY - don't wait for Firebase
+  $('regStep0').style.display = 'none';
+  $('regStep1').style.display = 'block';
+
+  // Background Firebase check (non-blocking)
+  setTimeout(function(){
+    try {
+      if(db && db.ref) {
+        const key = getPendingRegKey(phone);
+        db.ref('pendingRegistrations/' + key).once('value').then(function(snap){
+          const data = snap.val();
+          if(data && data.status === 'approved'){
+            regApprovedData = data;
+            $('regStep0').style.display = 'none';
+            $('regStep1').style.display = 'none';
+            $('regStep3').style.display = 'none';
+            $('regStep4').style.display = 'block';
+            $('regApprovedPkg').textContent = (PACKAGES[data.package] && PACKAGES[data.package].name) || data.package;
+            $('regApprovedPhone').textContent = phone;
+            const pendingRef = localStorage.getItem('sf_pending_ref');
+            if(pendingRef) $('regRef').value = pendingRef;
+            toast('Your payment is approved! Complete your registration.','ok');
+          } else if(data && data.status === 'pending'){
+            $('regStep0').style.display = 'none';
+            $('regStep1').style.display = 'none';
+            $('regStep4').style.display = 'none';
+            $('regStep3').style.display = 'block';
+            toast('Your payment is still under review.','warn');
+          }
+        }).catch(function(err){
+          console.log('Firebase check error (non-critical):', err);
+        });
+      }
+    } catch(e) { console.log('Background check error', e); }
+  }, 100);
+}
+
+function selectRegPkg(el, pkgKey){
+  document.querySelectorAll('#regStep1 .pkg-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedPkg = pkgKey;
+  $('btnGoPay').disabled = false;
+  $('btnGoPay').style.opacity = '1';
+}
+
+function goToPayment(){
+  if(!selectedPkg){ toast('Please select a package','err'); return; }
+  const pkg = PACKAGES[selectedPkg];
+  $('payAmount').textContent = fmtN(pkg.price);
+  $('regStep1').style.display = 'none';
+  $('regStep2').style.display = 'block';
+  startRegTimer(30 * 60); // 30 minutes
+}
+
+function startRegTimer(seconds){
+  clearInterval(regTimerInterval);
+  let remaining = seconds;
+  function update(){
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    $('payTimer').textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+    if(remaining <= 0){
+      clearInterval(regTimerInterval);
+      $('payTimer').textContent = '00:00';
+      toast('Time expired. Please start over.','err');
+      setTimeout(resetRegFlow, 2000);
+    }
+    remaining--;
+  }
+  update();
+  regTimerInterval = setInterval(update, 1000);
+}
+
+function handleRegProof(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    regProofImage = e.target.result;
+    const preview = $('regProofPreview');
+    preview.src = regProofImage;
+    preview.style.display = 'block';
+    $('btnSubmitPay').disabled = false;
+    $('btnSubmitPay').style.opacity = '1';
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitPayment(){
+  if(!selectedPkg || !regProofImage || !regPhone){ toast('Please complete all steps','err'); return; }
+  const pkg = PACKAGES[selectedPkg];
+
+  const pendingRef = localStorage.getItem('sf_pending_ref') || '';
+
+  const pendingReg = {
+    phone: regPhone,
+    package: selectedPkg,
+    amount: pkg.price,
+    screenshot: regProofImage,
+    status: 'pending',
+    referredBy: pendingRef,
+    createdAt: new Date().toISOString()
+  };
+
+  const key = getPendingRegKey(regPhone);
+
+  // ALWAYS save to localDB first (guaranteed to work)
+  db.ref('pendingRegistrations/' + key).set(pendingReg).then(function(){
+    console.log('Registration saved to localDB');
+    // Sync to Firebase immediately if connected
+    syncToFirebase('pendingRegistrations/' + key, pendingReg);
+  }).catch(function(){
+    // If db.ref fails, save directly to localDB
+    if(window.localDB) window.localDB._setData('pendingRegistrations/' + key, pendingReg);
+  });
+
+  // Also save to old localStorage for backward compatibility
+  const localPending = JSON.parse(localStorage.getItem('sf_pending_regs') || '{}');
+  localPending[key] = pendingReg;
+  localStorage.setItem('sf_pending_regs', JSON.stringify(localPending));
+
+  clearInterval(regTimerInterval);
+  toast('Payment submitted for review!','ok');
+  $('regStep2').style.display = 'none';
+  $('regStep3').style.display = 'block';
+}
+
+function checkRegStatusAgain(){
+  if(!regPhone){ resetRegFlow(); return; }
+
+  // Check local pending first
+  try {
+    const localPending = JSON.parse(localStorage.getItem('sf_pending_regs') || '{}');
+    const localReg = localPending[getPendingRegKey(regPhone)];
+    if(localReg && localReg.status === 'approved'){
+      regApprovedData = localReg;
+      $('regStep3').style.display = 'none';
+      $('regStep4').style.display = 'block';
+      $('regApprovedPkg').textContent = (PACKAGES[localReg.package] && PACKAGES[localReg.package].name) || localReg.package;
+      $('regApprovedPhone').textContent = regPhone;
+      const pendingRef = localStorage.getItem('sf_pending_ref');
+      if(pendingRef) $('regRef').value = pendingRef;
+      toast('Approved! Complete your registration.','ok');
+      return;
+    } else if(localReg && localReg.status === 'pending'){
+      toast('Still under review. Please wait.','warn');
+      return;
+    }
+  } catch(e) { console.log('Local status check error', e); }
+
+  toast('Checking status...');
+  // Non-blocking Firebase check
+  setTimeout(function(){
+    try {
+      if(db && db.ref) {
+        const key = getPendingRegKey(regPhone);
+        db.ref('pendingRegistrations/' + key).once('value').then(function(snap){
+          const data = snap.val();
+          if(data && data.status === 'approved'){
+            regApprovedData = data;
+            $('regStep3').style.display = 'none';
+            $('regStep4').style.display = 'block';
+            $('regApprovedPkg').textContent = (PACKAGES[data.package] && PACKAGES[data.package].name) || data.package;
+            $('regApprovedPhone').textContent = regPhone;
+            const pendingRef = localStorage.getItem('sf_pending_ref');
+            if(pendingRef) $('regRef').value = pendingRef;
+            toast('Approved! Complete your registration.','ok');
+          } else if(data && data.status === 'pending'){
+            toast('Still under review. Please wait.','warn');
+          } else {
+            toast('No record found. Please start over.','err');
+            resetRegFlow();
+          }
+        }).catch(function(err){
+          console.log('Firebase status check error:', err);
+          toast('Connection issue. Please try again.','warn');
+        });
+      }
+    } catch(e) {
+      console.log('Status check error', e);
+      toast('Connection issue. Please try again.','warn');
+    }
+  }, 100);
+}
+
+// ==================== ADMIN & TELEGRAM HELPERS ====================
+function ensureAdminAccounts(){
+  const allUsers = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+  const admins = [
+    { phone: '08131454305', password: '0110254', name: 'Admin', email: 'admin@skillforge.app', package: 'elite', refCode: 'FORGE-ADMIN1' },
+    { phone: '8131454305',  password: '0110254', name: 'Admin', email: 'admin@skillforge.app', package: 'elite', refCode: 'FORGE-ADMIN2' }
+  ];
+  let changed = false;
+  admins.forEach(a => {
+    const key = getUserKey(a.phone);
+    if(!allUsers[key]){
+      allUsers[key] = {
+        ...a,
+        wallet: { available: 0, pending: 0, taskRewards: 0, refRewards: 0, withdrawn: 0, taskWithdrawn: 0, refWithdrawn: 0 },
+        referrals: 0,
+        referredBy: null,
+        registeredAt: new Date().toISOString(),
+        suspended: false
+      };
+      changed = true;
+    }
+  });
+  if(changed) localStorage.setItem('sf_all_users', JSON.stringify(allUsers));
+}
+
+function showTgModal(){
+  const linkBtn = $('tgLinkBtn');
+  if(linkBtn) linkBtn.href = TELEGRAM_CHANNEL_URL;
+  $('tgModalBg').style.display = 'flex';
+  $('tgModalBg').classList.add('on');
+  $('tgContinueBtn').disabled = true;
+  $('tgContinueBtn').style.opacity = '0.5';
+  $('tgContinueBtn').style.cursor = 'not-allowed';
+  $('tgContinueBtn').style.background = '#9ca3af';
+}
+function handleTgJoin(){
+  localStorage.setItem('sf_telegram_joined', 'true');
+  const btn = $('tgContinueBtn');
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.style.cursor = 'pointer';
+  btn.style.background = '';
+}
+function closeTgModal(){
+  if($('tgContinueBtn').disabled) return;
+  $('tgModalBg').classList.remove('on');
+  $('tgModalBg').style.display = 'none';
+}
+
+// ==================== AUTH ====================
+function doRegister(){
+  const name = $('regName').value.trim();
+  const email = $('regEmail').value.trim();
+  const phone = regPhone;
+  const pass = $('regPassword').value;
+  const pass2 = $('regPassword2').value;
+  const ref = $('regRef').value.trim().toUpperCase();
+
+  if(!name || !email || !phone || !pass){ toast('Please fill all required fields','err'); return; }
+  if(pass.length < 6){ toast('Password must be at least 6 characters','err'); return; }
+  if(pass !== pass2){ toast('Passwords do not match','err'); return; }
+  if(!regApprovedData || !regApprovedData.package){ toast('No approved package found. Please start over.','err'); return; }
+
+  const userKey = getUserKey(phone);
+
+  currentUser = {
+    name, email, phone,
+    password: pass,
+    refCode: 'FORGE-' + Math.random().toString(36).substr(2,6).toUpperCase(),
+    package: regApprovedData.package,
+    wallet: { available:0, pending:0, taskRewards:0, refRewards:0, withdrawn:0, taskWithdrawn:0, refWithdrawn:0 },
+    referrals: 0,
+    referredBy: ref || regApprovedData.referredBy || null,
+    registeredAt: new Date().toISOString(),
+    suspended: false
+  };
+
+  isAdmin = ADMIN_PHONES.includes(sanitizePhone(phone));
+
+  try {
+    saveUser();
+  } catch(e) {
+    toast('Error creating account. Please try again.','err');
+    return;
+  }
+
+  waitForAuth(() => {
+    db.ref('users/' + userKey).set(currentUser).then(() => {
+      console.log('User synced to Firebase');
+      // Credit referrer if exists
+      if(currentUser.referredBy){
+        const comm = (PACKAGES[regApprovedData.package] && PACKAGES[regApprovedData.package].refCommission) || 0;
+        db.ref('users').orderByChild('refCode').equalTo(currentUser.referredBy).once('value').then(snap => {
+          const refData = snap.val();
+          if(refData){
+            const refKey = Object.keys(refData)[0];
+            const refUser = refData[refKey];
+            const updates = {};
+            updates['users/' + refKey + '/wallet/refRewards'] = ((refUser.wallet && refUser.wallet.refRewards) || 0) + comm;
+            updates['users/' + refKey + '/wallet/available'] = ((refUser.wallet && refUser.wallet.available) || 0) + comm;
+            updates['users/' + refKey + '/referrals'] = (refUser.referrals || 0) + 1;
+            updates['referrals/' + currentUser.referredBy + '/count'] = (refUser.referrals || 0) + 1;
+            // Local fallback
+            const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+            if(allUsersLocal[refKey]){
+              allUsersLocal[refKey].wallet = allUsersLocal[refKey].wallet || {};
+              allUsersLocal[refKey].wallet.refRewards = (allUsersLocal[refKey].wallet.refRewards || 0) + comm;
+              allUsersLocal[refKey].wallet.available = (allUsersLocal[refKey].wallet.available || 0) + comm;
+              allUsersLocal[refKey].referrals = (allUsersLocal[refKey].referrals || 0) + 1;
+              localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal));
+            }
+            db.ref().update(updates);
+          }
+        });
+      }
+      enterApp();
+      toast('Welcome to SkillForge!','ok');
+      setTimeout(() => { if(!localStorage.getItem('sf_telegram_joined')) showTgModal(); }, 800);
+    }).catch(err => {
+      console.error('Firebase save error:', err);
+      enterApp();
+      toast('Account created locally. Sync pending.','ok');
+    });
+  });
+}
+
+function doLogin(){
+  const id = $('loginId').value.trim();
+  const pass = $('loginPassword').value;
+  if(!id || !pass){ toast('Please enter your credentials','err'); return; }
+
+  toast('Logging in...');
+
+  // 1. Check current session first
+  const stored = localStorage.getItem('sf_user');
+  if(stored){
+    try {
+      const u = JSON.parse(stored);
+      if((u.phone === id || u.email === id) && u.password === pass){
+        if(u.suspended){ toast('Your account has been suspended.','err'); return; }
+        currentUser = u;
+        isAdmin = ADMIN_PHONES.includes(sanitizePhone(u.phone));
+        saveUser();
+        enterApp();
+        toast('Welcome back, ' + u.name + '!','ok');
+        syncFromFirebase(u.phone);
+        return;
+      }
+    } catch(e) {}
+  }
+
+  // 2. Check all local users registry (works offline / without Firebase)
+  const allUsers = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+  for(const key in allUsers){
+    const u = allUsers[key];
+    if((u.phone === id || u.email === id) && u.password === pass){
+      if(u.suspended){ toast('Your account has been suspended.','err'); return; }
+      currentUser = u;
+      isAdmin = ADMIN_PHONES.includes(sanitizePhone(u.phone));
+      saveUser();
+      enterApp();
+      toast('Welcome back, ' + u.name + '!','ok');
+      syncFromFirebase(u.phone);
+      return;
+    }
+  }
+
+  // 3. Fallback to Firebase
+  const phoneKey = id.includes('@') ? null : getUserKey(id);
+  waitForAuth(() => {
+    if(phoneKey){
+      db.ref('users/' + phoneKey).once('value').then(snap => {
+        const u = snap.val();
+        if(u && u.password === pass){
+          if(u.suspended){ toast('Your account has been suspended.','err'); return; }
+          currentUser = u;
+          isAdmin = ADMIN_PHONES.includes(sanitizePhone(u.phone));
+          saveUser();
+          enterApp();
+          toast('Welcome back, ' + u.name + '!','ok');
+        } else {
+          toast('Invalid credentials','err');
+        }
+      }).catch(() => toast('Server error. Please try again.','err'));
+    } else {
+      db.ref('users').orderByChild('email').equalTo(id).once('value').then(snap => {
+        const data = snap.val();
+        if(data){
+          const key = Object.keys(data)[0];
+          const u = data[key];
+          if(u.password === pass){
+            if(u.suspended){ toast('Your account has been suspended.','err'); return; }
+            currentUser = u;
+            isAdmin = ADMIN_PHONES.includes(sanitizePhone(u.phone));
+            saveUser();
+            enterApp();
+            toast('Welcome back, ' + u.name + '!','ok');
+          } else { toast('Invalid credentials','err'); }
+        } else { toast('Invalid credentials','err'); }
+      }).catch(() => toast('Server error. Please try again.','err'));
+    }
+  });
+}
+
+function syncFromFirebase(phone){
+  const phoneKey = getUserKey(phone);
+  waitForAuth(() => {
+    db.ref('users/' + phoneKey).once('value').then(snap => {
+      const fresh = snap.val();
+      if(fresh){
+        currentUser = fresh;
+        saveUser();
+        loadDashboard();
+      }
+    }).catch(()=>{});
+  });
+}
+
+function doLogout(){
+  cleanupListeners();
+  currentUser = null;
+  isAdmin = false;
+  localStorage.removeItem('sf_user');
+  showLanding();
+  toast('Logged out successfully');
+}
+
+function saveUser(){
+  if(currentUser){
+    localStorage.setItem('sf_user', JSON.stringify(currentUser));
+    const allUsers = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+    allUsers[getUserKey(currentUser.phone)] = currentUser;
+    localStorage.setItem('sf_all_users', JSON.stringify(allUsers));
+    syncUserToFirebase();
+  }
+}
+
+function syncUserToFirebase(){
+  if(!currentUser) return;
+  waitForAuth(() => {
+    const key = getUserKey(currentUser.phone);
+    db.ref('users/' + key).set(currentUser).catch(()=>{});
+  });
+}
+
+function enterApp(){
+  document.body.classList.remove('landing','auth');
+  $('appHeader').style.display = 'flex';
+  $('botNav').style.display = 'flex';
+  startListeners();
+  if(isAdmin){
+    // Admin view: only show Admin nav, go directly to admin panel
+    $('navHome').style.display = 'none';
+    $('navTask').style.display = 'none';
+    $('navRefer').style.display = 'none';
+    $('navWithdraw').style.display = 'none';
+    $('navAdmin').style.display = 'flex';
+    goTo('admin');
+  } else {
+    // User view: show normal nav, hide admin
+    $('navHome').style.display = 'flex';
+    $('navTask').style.display = 'flex';
+    $('navRefer').style.display = 'flex';
+    $('navWithdraw').style.display = 'flex';
+    $('navAdmin').style.display = 'none';
+    goTo('dashboard');
+  }
+}
+
+function startListeners(){
+  cleanupListeners();
+  listenToTasks();
+  listenToPortal();
+  listenToAllUsers();
+  listenToDeposits();
+  listenToWithdrawals();
+  listenToSubmissions();
+  listenToPendingRegs();
+  listenToSocialTasks();
+  listenToSocialSubmissions();
+  if(currentUser){
+    listenToUser(currentUser.phone);
+    listenToReferrals(currentUser.refCode);
+  }
+}
+
+function cleanupListeners(){
+  firebaseListeners.forEach(ref => ref.off());
+  firebaseListeners = [];
+}
+
+function listenToTasks(){
+  waitForAuth(() => {
+    const ref = db.ref('tasks');
+    ref.on('value', snap => {
+      const data = snap.val();
+      allTasks = data ? Object.entries(data).map(([k,v])=>({...v,id:k})) : [];
+      if($('page-tasks').classList.contains('active')) loadTasks();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToPortal(){
+  waitForAuth(() => {
+    const ref1 = db.ref('portal/taskWithdrawal');
+    ref1.on('value', snap => {
+      portalTaskOpen = !!snap.val();
+      localStorage.setItem('sf_portal_task', portalTaskOpen ? 'open' : 'closed');
+      if($('page-withdraw').classList.contains('active')) loadWithdraw();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref1);
+
+    const ref2 = db.ref('portal/refWithdrawal');
+    ref2.on('value', snap => {
+      portalRefOpen = !!snap.val();
+      localStorage.setItem('sf_portal_ref', portalRefOpen ? 'open' : 'closed');
+      if($('page-withdraw').classList.contains('active')) loadWithdraw();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref2);
+  });
+}
+
+function listenToAllUsers(){
+  waitForAuth(() => {
+    const ref = db.ref('users');
+    ref.on('value', snap => {
+      const data = snap.val();
+      allUsers = data ? Object.entries(data).map(([k,v])=>({...v,_key:k})) : [];
+      const count = allUsers.length;
+      $('heroUsers').textContent = count.toLocaleString();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+      if($('page-referrals').classList.contains('active')) loadReferrals();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToDeposits(){
+  // Load local deposits first (instant)
+  var localDeps = JSON.parse(localStorage.getItem('sf_local_deposits') || '[]');
+  allDeposits = localDeps;
+  if($('page-deposit').classList.contains('active')) loadDeposit();
+  if($('page-admin').classList.contains('active')) loadAdmin();
+
+  waitForAuth(() => {
+    const ref = db.ref('deposits');
+    ref.on('value', snap => {
+      const data = snap.val();
+      var fbDeps = data ? Object.entries(data).map(function([k,v]){ return Object.assign({}, v, {id:k}); }) : [];
+      // Merge Firebase data with local data
+      allDeposits = fbDeps.concat(localDeps.filter(function(d){ return !d.id || d.id.startsWith('dep_'); }));
+      if($('page-deposit').classList.contains('active')) loadDeposit();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToWithdrawals(){
+  try {
+    const localData = JSON.parse(localStorage.getItem('sf_local_db') || '{}');
+    if(localData.withdrawals) {
+      allWithdrawals = Object.entries(localData.withdrawals).map(([k,v])=>({...v,id:k}));
+      if($('page-withdraw').classList.contains('active')) loadWithdraw();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    }
+  } catch(e) {}
+
+  waitForAuth(() => {
+    const ref = db.ref('withdrawals');
+    ref.on('value', snap => {
+      const data = snap.val();
+      allWithdrawals = data ? Object.entries(data).map(([k,v])=>({...v,id:k})) : [];
+      if($('page-withdraw').classList.contains('active')) loadWithdraw();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToSubmissions(){
+  waitForAuth(() => {
+    const ref = db.ref('submissions');
+    ref.on('value', snap => {
+      const data = snap.val();
+      allSubmissions = data ? Object.entries(data).map(([k,v])=>({...v,id:k})) : [];
+      if($('page-tasks').classList.contains('active')) loadTasks();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToSocialTasks(){
+  waitForAuth(() => {
+    const ref = db.ref('socialTasks');
+    ref.on('value', snap => {
+      socialTasks = snap.val() || {};
+      if($('page-tasks').classList.contains('active')) loadTasks();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToSocialSubmissions(){
+  // Read from BOTH new localDB and old localStorage
+  let merged = {};
+  try {
+    const localData = JSON.parse(localStorage.getItem('sf_local_db') || '{}');
+    if(localData.socialSubmissions) {
+      Object.assign(merged, localData.socialSubmissions);
+    }
+  } catch(e) {}
+  try {
+    const oldSubs = JSON.parse(localStorage.getItem('sf_social_subs') || '[]');
+    if(Array.isArray(oldSubs)) {
+      oldSubs.forEach(sub => {
+        const key = sub.id || ('local_' + Date.now());
+        merged[key] = sub;
+      });
+    }
+  } catch(e) {}
+  socialSubmissions = Object.entries(merged).map(([k,v])=>({...v,id:k}));
+  if($('page-tasks').classList.contains('active')) loadTasks();
+  if($('page-admin').classList.contains('active')) loadAdmin();
+
+  waitForAuth(() => {
+    const ref = db.ref('socialSubmissions');
+    ref.on('value', snap => {
+      const data = snap.val();
+      socialSubmissions = data ? Object.entries(data).map(([k,v])=>({...v,id:k})) : [];
+      if($('page-tasks').classList.contains('active')) loadTasks();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToPendingRegs(){
+  // Read from BOTH new localDB and old localStorage
+  let merged = {};
+  try {
+    const localData = JSON.parse(localStorage.getItem('sf_local_db') || '{}');
+    if(localData.pendingRegistrations) {
+      Object.assign(merged, localData.pendingRegistrations);
+    }
+  } catch(e) {}
+  try {
+    const oldPending = JSON.parse(localStorage.getItem('sf_pending_regs') || '{}');
+    Object.assign(merged, oldPending);
+  } catch(e) {}
+  allPendingRegs = Object.entries(merged).map(([k,v])=>({...v,id:k}));
+  if($('page-admin').classList.contains('active')) loadAdmin();
+
+  waitForAuth(() => {
+    const ref = db.ref('pendingRegistrations');
+    ref.on('value', snap => {
+      const data = snap.val();
+      allPendingRegs = data ? Object.entries(data).map(([k,v])=>({...v,id:k})) : [];
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToUser(phone){
+  waitForAuth(() => {
+    const key = getUserKey(phone);
+    const ref = db.ref('users/' + key);
+    ref.on('value', snap => {
+      const data = snap.val();
+      if(data && currentUser && getUserKey(currentUser.phone) === key){
+        currentUser = data;
+        localStorage.setItem('sf_user', JSON.stringify(currentUser));
+      }
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+function listenToReferrals(refCode){
+  if(!refCode) return;
+  waitForAuth(() => {
+    const ref = db.ref('referrals/' + refCode);
+    ref.on('value', snap => {
+      const data = snap.val();
+      if(data && currentUser){
+        currentUser.referrals = data.count || 0;
+        saveUser();
+        if($('page-referrals').classList.contains('active')) loadReferrals();
+        if($('page-dashboard').classList.contains('active')) loadDashboard();
+      }
+    });
+    firebaseListeners.push(ref);
+  });
+}
+
+// ==================== FORGOT PASSWORD ====================
+function showForgotModal(){ showPage('forgot'); }
+function sendResetCode(){
+  const email = $('fpEmail').value.trim();
+  if(!email || !email.includes('@')){ toast('Please enter a valid email','err'); return; }
+  toast('Reset code sent to ' + email,'ok');
+  showPage('verify');
+}
+function verifyResetCode(){
+  const code = $('fpCodeInput').value.trim();
+  if(code.length !== 6){ toast('Please enter the 6-digit code','err'); return; }
+  toast('Code verified!','ok');
+  showPage('newpass');
+}
+function setNewPassword(){
+  const p1 = $('fpNewPass').value;
+  const p2 = $('fpConfirmPass').value;
+  if(p1.length < 6){ toast('Password must be at least 6 characters','err'); return; }
+  if(p1 !== p2){ toast('Passwords do not match','err'); return; }
+  toast('Password updated successfully!','ok');
+  showPage('login');
+}
+
+// ==================== DASHBOARD ====================
+function loadDashboard(){
+  if(!currentUser) return;
+  $('dashName').textContent = currentUser.name;
+  const pkg = currentUser.package ? PACKAGES[currentUser.package] : null;
+  $('dashPackage').textContent = pkg ? pkg.name + ' Package' : 'No active package — Tap Upgrade to activate';
+  $('dashAvail').textContent = fmtN((currentUser.wallet && currentUser.wallet.available));
+  $('dashPending').textContent = fmtN((currentUser.wallet && currentUser.wallet.pending));
+  const total = ((currentUser.wallet && currentUser.wallet.available)||0) + ((currentUser.wallet && currentUser.wallet.pending)||0) + ((currentUser.wallet && currentUser.wallet.withdrawn)||0);
+  $('dashTotal').textContent = fmtN(total);
+  $('dashRefs').textContent = currentUser.referrals || 0;
+
+  const mySocialSubs = socialSubmissions.filter(s => s.userPhone === currentUser.phone && s.status === 'approved');
+  $('dashTasks').textContent = mySocialSubs.length;
+  $('dashWithdrawn').textContent = fmtN((currentUser.wallet && currentUser.wallet.withdrawn));
+
+  const txs = buildTxList().slice(0, 5);
+  const txEl = $('dashTxList');
+  if(txs.length === 0){
+    txEl.innerHTML = '<div class="empty" style="padding:20px;"><p>No transactions yet</p></div>';
+  } else {
+    txEl.innerHTML = txs.map(tx => `
+      <div class="tx-row">
+        <div class="tx-left">
+          <div class="tx-title">${tx.title}</div>
+          <div class="tx-meta">${fmtDate(tx.date)}</div>
+        </div>
+        <div class="tx-amt ${tx.type==='debit'?'neg':''}">${tx.type==='debit'?'-':'+'}${fmtN(tx.amount).replace('₦','')}</div>
+      </div>
+    `).join('');
+  }
+}
+
+function buildTxList(){
+  const txs = [];
+  allDeposits.filter(d => d.userPhone === currentUser.phone && d.status === 'approved').forEach(d => {
+    txs.push({title:'Package Upgrade', amount:d.amount, date:d.reviewedAt||d.date, type:'credit'});
+  });
+  socialSubmissions.filter(s => s.userPhone === currentUser.phone && s.status === 'approved').forEach(s => {
+    const plat = SOCIAL_PLATFORMS[s.platform];
+    txs.push({title:((plat && plat.name) || s.platform) + ' Task', amount:s.reward, date:s.reviewedAt||s.date, type:'credit'});
+  });
+  allWithdrawals.filter(w => w.userPhone === currentUser.phone).forEach(w => {
+    txs.push({title:(w.wdType==='ref'?'Referral':'Task')+' Withdrawal', amount:w.amount, date:w.date, type:'debit'});
+  });
+  return txs.sort((a,b) => new Date(b.date) - new Date(a.date));
+}
+
+// ==================== DEPOSIT (UPGRADE) ====================
+function loadDeposit(){
+  if(!currentUser) return;
+  document.querySelectorAll('#depPkgList .pkg-card').forEach(c => {
+    c.classList.remove('pkg-active','selected');
+    if(currentUser.package && c.dataset.pkg === currentUser.package){
+      c.classList.add('pkg-active');
+    }
+  });
+
+  const myDeps = allDeposits.filter(d => d.userPhone === currentUser.phone).sort((a,b) => new Date(b.date)-new Date(a.date));
+  const list = $('myDepositsList');
+  if(myDeps.length === 0){
+    list.innerHTML = '<div class="empty"><i class="fas fa-university"></i><h4>No deposits yet</h4><p>Select a package and make payment</p></div>';
+  } else {
+    list.innerHTML = myDeps.map(d => `
+      <div class="tx-row">
+        <div class="tx-left">
+          <div class="tx-title">${(PACKAGES[d.package] && PACKAGES[d.package].name) || d.package} Package</div>
+          <div class="tx-meta">${fmtDate(d.date)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="tx-amt">${fmtN(d.amount)}</div>
+          <span class="status-badge ${d.status}">${d.status}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function selectDepPkg(el, pkgKey){
+  if(currentUser.package === pkgKey){ toast('You already have this package active','warn'); return; }
+  document.querySelectorAll('#depPkgList .pkg-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedDepPkg = pkgKey;
+  const pkg = PACKAGES[pkgKey];
+  $('depAmount').textContent = fmtN(pkg.price);
+  $('depForm').style.display = 'block';
+  $('depForm').scrollIntoView({behavior:'smooth'});
+}
+
+function handleDepProof(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    depProofImage = e.target.result;
+    const preview = $('depProofPreview');
+    preview.src = depProofImage;
+    preview.style.display = 'block';
+    $('btnSubmitDep').disabled = false;
+    $('btnSubmitDep').style.opacity = '1';
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitDeposit(){
+  if(!selectedDepPkg){ toast('Please upload payment proof screenshot','err'); return; }
+
+  const pkg = PACKAGES[selectedDepPkg];
+  const dep = {
+    userPhone: currentUser.phone,
+    userName: currentUser.name,
+    package: selectedDepPkg,
+    amount: pkg.price,
+    screenshot: depProofImage,
+    status: 'pending',
+    date: new Date().toISOString()
+  };
+
+  // Save locally FIRST (always works, even offline)
+  var localDeps = JSON.parse(localStorage.getItem('sf_local_deposits') || '[]');
+  dep.id = 'dep_' + Date.now();
+  localDeps.push(dep);
+  localStorage.setItem('sf_local_deposits', JSON.stringify(localDeps));
+  allDeposits.push(dep);
+
+  waitForAuth(() => {
+    db.ref('deposits').push(dep).then(function(ref){
+      dep.id = ref.key;
+      toast('Deposit submitted for review!','ok');
+      depProofImage = null;
+      $('depProofPreview').style.display = 'none';
+      $('depProofInput').value = '';
+      selectedDepPkg = null;
+      document.querySelectorAll('#depPkgList .pkg-card').forEach(function(c){ c.classList.remove('selected'); });
+      $('depForm').style.display = 'none';
+      loadDeposit();
+      if($('page-admin').classList.contains('active')) loadAdmin();
+    }).catch(function(){
+      toast('Deposit saved locally. Will sync when online.','ok');
+      depProofImage = null;
+      $('depProofPreview').style.display = 'none';
+      $('depProofInput').value = '';
+      selectedDepPkg = null;
+      document.querySelectorAll('#depPkgList .pkg-card').forEach(function(c){ c.classList.remove('selected'); });
+      $('depForm').style.display = 'none';
+      loadDeposit();
+    });
+  });
+}
+
+// ==================== SOCIAL TASKS ====================
+let currentSocialPlatform = null;
+let socialProofImage = null;
+
+function loadTasks(){
+  if(!currentUser) return;
+  const hasPkg = !!currentUser.package;
+  $('taskNoPkg').style.display = hasPkg ? 'none' : 'block';
+  $('taskContent').style.display = hasPkg ? 'block' : 'none';
+  if(!hasPkg) return;
+
+  const pkgKey = currentUser.package;
+  const reward = (PACKAGES[pkgKey] && PACKAGES[pkgKey].dailyReward) || 0;
+  const mySocialSubs = socialSubmissions.filter(s => s.userPhone === currentUser.phone);
+
+  const list = $('socialTaskList');
+  const activePlatforms = Object.entries(socialTasks).filter(([k,v]) => v && v.url && v.active !== false);
+
+  if(activePlatforms.length === 0){
+    list.innerHTML = '<div class="empty"><i class="fas fa-tasks"></i><h4>No tasks available</h4><p>Check back later for new social media tasks</p></div>';
+  } else {
+    list.innerHTML = activePlatforms.map(([platform, data]) => {
+      const plat = SOCIAL_PLATFORMS[platform];
+      const sub = mySocialSubs.find(s => s.platform === platform);
+      let statusHtml = '';
+      if(sub){
+        statusHtml = `<span class="status-badge ${sub.status}">${sub.status}</span>`;
+      }
+      return `
+      <div class="task-item" onclick="openSocialTaskDetail('${platform}')" style="cursor:pointer;">
+        <div class="task-icon" style="background:${(plat && plat.color) || 'var(--green)'};"><i class="fab ${(plat && plat.icon) || 'fa-globe'}"></i></div>
+        <div class="task-info">
+          <h4>${(plat && plat.name) || platform}</h4>
+          <p>${data.title || 'Visit and follow our ' + ((plat && plat.name) || platform) + ' page'}</p>
+        </div>
+        <div style="text-align:right;">
+          <div class="task-reward">${fmtN(reward)}</div>
+          ${statusHtml}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const subList = $('mySocialSubmissionsList');
+  const mySubsSorted = mySocialSubs.sort((a,b) => new Date(b.date)-new Date(a.date));
+  if(mySubsSorted.length === 0){
+    subList.innerHTML = '<div class="empty"><i class="fas fa-history"></i><h4>No submissions yet</h4></div>';
+  } else {
+    subList.innerHTML = mySubsSorted.map(s => {
+      const plat = SOCIAL_PLATFORMS[s.platform];
+      return `
+      <div class="stat-row">
+        <div class="stat-icon" style="background:${(plat && plat.color) || 'var(--green)'};"><i class="fab ${(plat && plat.icon) || 'fa-globe'}"></i></div>
+        <div class="stat-info">
+          <h4>${(plat && plat.name) || s.platform}</h4>
+          <p>${fmtN(s.reward)} — <span class="status-badge ${s.status}">${s.status}</span></p>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function openSocialTaskDetail(platform){
+  const data = socialTasks[platform];
+  if(!data || !data.url){ toast('Task not available','err'); return; }
+  const plat = SOCIAL_PLATFORMS[platform];
+  const pkgKey = currentUser.package;
+  if(!pkgKey){ toast('Activate a package first','err'); return; }
+
+  const mySubs = socialSubmissions.filter(s => s.userPhone === currentUser.phone && s.platform === platform);
+  const approved = mySubs.find(s => s.status === 'approved');
+  const pending = mySubs.find(s => s.status === 'pending');
+  if(approved){ toast('You have already completed this task','ok'); return; }
+  if(pending){ toast('Your submission is pending review','warn'); return; }
+
+  currentSocialPlatform = platform;
+  socialProofImage = null;
+
+  const iconBox = $('stdIcon');
+  iconBox.style.background = (plat && plat.color) || 'var(--green)';
+  iconBox.innerHTML = `<i class="fab ${(plat && plat.icon) || 'fa-globe'}"></i>`;
+  $('stdTitle').textContent = (plat && plat.name) || platform;
+  $('stdPlatform').textContent = data.title || 'Visit and follow our page';
+  $('stdReward').textContent = fmtN((PACKAGES[pkgKey] && PACKAGES[pkgKey].dailyReward) || 0);
+  $('stdLink').href = data.url;
+  $('socialProofPreview').style.display = 'none';
+  $('socialProofInput').value = '';
+  goTo('socialtaskdetail');
+}
+
+function handleSocialProof(input){
+  const file = input.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e){
+    socialProofImage = e.target.result;
+    const preview = $('socialProofPreview');
+    preview.src = socialProofImage;
+    preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function submitSocialTaskProof(){
+  if(!currentSocialPlatform){ toast('No task selected','err'); return; }
+  if(!socialProofImage){ toast('Please upload proof screenshot','err'); return; }
+
+  const data = socialTasks[currentSocialPlatform];
+  if(!data){ toast('Task data missing','err'); return; }
+  const pkgKey = currentUser.package;
+  const reward = (PACKAGES[pkgKey] && PACKAGES[pkgKey].dailyReward) || 0;
+
+  const sub = {
+    platform: currentSocialPlatform,
+    userPhone: currentUser.phone,
+    userName: currentUser.name,
+    userPackage: pkgKey,
+    proofImage: socialProofImage,
+    reward: reward,
+    status: 'pending',
+    date: new Date().toISOString()
+  };
+
+  // ALWAYS save to localDB first
+  const subRef = db.ref('socialSubmissions').push();
+  subRef.set(sub).then(function(){
+    console.log('Social submission saved, key:', subRef.key);
+    toast('Task submitted for review!','ok');
+    // Sync to Firebase immediately
+    syncToFirebase('socialSubmissions/' + subRef.key, sub);
+  }).catch(function(){
+    if(window.localDB) {
+      const localKey = 'local_' + Date.now();
+      window.localDB._setData('socialSubmissions/' + localKey, sub);
+    }
+    // Also save to old localStorage
+    const localSubs = JSON.parse(localStorage.getItem('sf_social_subs') || '[]');
+    sub.id = 'local_' + Date.now();
+    localSubs.push(sub);
+    localStorage.setItem('sf_social_subs', JSON.stringify(localSubs));
+    socialSubmissions.push(sub);
+    toast('Task saved locally. Will sync when online.','ok');
+  });
+
+  socialProofImage = null;
+  currentSocialPlatform = null;
+  goTo('tasks');
+}
+
+// Old generic task functions (deprecated, kept for compatibility)
+function openTaskDetail(taskId){ openSocialTaskDetail(taskId); }
+function handleTaskProof(input){ /* deprecated */ }
+function submitTaskProof(){ /* deprecated */ }
+
+// ==================== REFERRALS ====================
+function loadReferrals(){
+  if(!currentUser) return;
+  $('refCode').textContent = currentUser.refCode;
+  $('refLink').textContent = BASE_URL + '?ref=' + currentUser.refCode;
+  $('refCount').textContent = currentUser.referrals || 0;
+  $('refEarnings').textContent = fmtN((currentUser.wallet && currentUser.wallet.refRewards) || 0);
+
+  const myTeam = allUsers.filter(u => u.referredBy === currentUser.refCode);
+  const teamList = $('teamList');
+  if(myTeam.length === 0){
+    teamList.innerHTML = '<div class="empty"><i class="fas fa-users"></i><h4>No referrals yet</h4><p>Share your link to start building your team</p></div>';
+  } else {
+    teamList.innerHTML = myTeam.map(t => {
+      const pkg = t.package ? PACKAGES[t.package] : null;
+      return `
+      <div class="stat-row">
+        <div class="stat-icon"><i class="fas fa-user"></i></div>
+        <div class="stat-info">
+          <h4>${t.name}</h4>
+          <p>${pkg ? pkg.name : 'No package'} — ${t.phone}</p>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function copyRef(){
+  if(!currentUser) return;
+  navigator.clipboard.writeText(currentUser.refCode).then(()=>toast('Referral code copied!','ok'));
+}
+function copyLink(){
+  if(!currentUser) return;
+  const link = BASE_URL + '?ref=' + currentUser.refCode;
+  navigator.clipboard.writeText(link).then(()=>toast('Referral link copied!','ok'));
+}
+function shareWhatsApp(){
+  if(!currentUser) return;
+  const code = currentUser.refCode;
+  const link = BASE_URL + '?ref=' + code;
+  const text = "Making money should be your first priority in 2026, and SkillForge is here to make that reality! Join me and start earning today through referrals and tasks. Use my referral code: " + code + "\n\n" + link + "\n\nDon't sleep on this opportunity!";
+  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+}
+
+// ==================== WITHDRAW ====================
+let currentWdType = 'task';
+
+function switchWdTab(type){
+  currentWdType = type;
+  document.querySelectorAll('#page-withdraw .tab-bar button').forEach(b => b.classList.remove('active'));
+  if(type === 'task'){
+    $('tabTaskWd').classList.add('active');
+    $('wdTaskPanel').style.display = 'block';
+    $('wdRefPanel').style.display = 'none';
+  } else {
+    $('tabRefWd').classList.add('active');
+    $('wdTaskPanel').style.display = 'none';
+    $('wdRefPanel').style.display = 'block';
+  }
+}
+
+function loadWithdraw(){
+  if(!currentUser) return;
+  const pkg = currentUser.package ? PACKAGES[currentUser.package] : null;
+  const min = pkg ? pkg.minWithdraw : 3000;
+
+  // Task Earnings
+  const taskBal = (currentUser.wallet && currentUser.wallet.taskRewards) || 0;
+  $('wTaskBal').textContent = fmtN(taskBal);
+  $('wTaskMinText').textContent = 'Minimum withdrawal: ' + fmtN(min);
+  $('wTaskStatus').className = 'with-status ' + (portalTaskOpen ? 'open' : 'closed');
+  $('wTaskStatus').innerHTML = portalTaskOpen ? '<i class="fas fa-lock-open"></i> Task Withdrawal Portal: OPEN' : '<i class="fas fa-lock"></i> Task Withdrawal Portal: CLOSED — Check back later';
+  $('btnTaskWithdraw').disabled = !portalTaskOpen;
+  $('btnTaskWithdraw').style.opacity = portalTaskOpen ? '1' : '0.5';
+
+  // Referral Earnings
+  const refBal = (currentUser.wallet && currentUser.wallet.refRewards) || 0;
+  $('wRefBal').textContent = fmtN(refBal);
+  $('wRefMinText').textContent = 'Minimum withdrawal: ' + fmtN(min);
+  $('wRefStatus').className = 'with-status ' + (portalRefOpen ? 'open' : 'closed');
+  $('wRefStatus').innerHTML = portalRefOpen ? '<i class="fas fa-lock-open"></i> Referral Withdrawal Portal: OPEN' : '<i class="fas fa-lock"></i> Referral Withdrawal Portal: CLOSED — Check back later';
+  $('btnRefWithdraw').disabled = !portalRefOpen;
+  $('btnRefWithdraw').style.opacity = portalRefOpen ? '1' : '0.5';
+
+  const myWds = allWithdrawals.filter(w => w.userPhone === currentUser.phone).sort((a,b) => new Date(b.date)-new Date(a.date));
+  const list = $('myWithdrawalsList');
+  if(myWds.length === 0){
+    list.innerHTML = '<div class="empty"><i class="fas fa-history"></i><h4>No withdrawals yet</h4></div>';
+  } else {
+    list.innerHTML = myWds.map(w => `
+      <div class="tx-row">
+        <div class="tx-left">
+          <div class="tx-title">${w.wdType === 'ref' ? 'Referral' : 'Task'} Withdrawal</div>
+          <div class="tx-meta">${fmtDate(w.date)}</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="tx-amt neg">${fmtN(w.amount)}</div>
+          <span class="status-badge ${w.status}">${w.status}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function submitTaskWithdrawal(){
+  const amt = parseInt($('wTaskAmt').value) || 0;
+  const acc = $('wTaskAcc').value.trim();
+  const bank = $('wTaskBank').value.trim();
+  const accName = $('wTaskAccName').value.trim();
+  if(!amt || !acc || !bank || !accName){ toast('Please fill all fields','err'); return; }
+
+  const pkg = currentUser.package ? PACKAGES[currentUser.package] : null;
+  const min = pkg ? pkg.minWithdraw : 3000;
+  if(amt < min){ toast('Minimum withdrawal is ' + fmtN(min),'err'); return; }
+  const taskBal = (currentUser.wallet && currentUser.wallet.taskRewards) || 0;
+  if(amt > taskBal){ toast('Insufficient task earnings','err'); return; }
+
+  const req = {
+    userPhone: currentUser.phone,
+    userName: currentUser.name,
+    userPackage: currentUser.package,
+    wdType: 'task',
+    amount: amt,
+    account: acc,
+    bank: bank,
+    accName: accName,
+    status: 'pending',
+    date: new Date().toISOString()
+  };
+
+  waitForAuth(() => {
+    db.ref('withdrawals').push(req).then(() => {
+      currentUser.wallet.taskRewards = (currentUser.wallet.taskRewards || 0) - amt;
+      currentUser.wallet.available = (currentUser.wallet.available || 0) - amt;
+      currentUser.wallet.pending = (currentUser.wallet.pending || 0) + amt;
+      saveUser();
+      loadDashboard();
+      loadWithdraw();
+      toast('Task withdrawal request submitted!','ok');
+      $('wTaskAmt').value = '';
+      $('wTaskAcc').value = '';
+      $('wTaskBank').value = '';
+      $('wTaskAccName').value = '';
+    }).catch(() => toast('Error submitting withdrawal','err'));
+  });
+}
+
+function submitRefWithdrawal(){
+  const amt = parseInt($('wRefAmt').value) || 0;
+  const acc = $('wRefAcc').value.trim();
+  const bank = $('wRefBank').value.trim();
+  const accName = $('wRefAccName').value.trim();
+  if(!amt || !acc || !bank || !accName){ toast('Please fill all fields','err'); return; }
+
+  const pkg = currentUser.package ? PACKAGES[currentUser.package] : null;
+  const min = pkg ? pkg.minWithdraw : 3000;
+  if(amt < min){ toast('Minimum withdrawal is ' + fmtN(min),'err'); return; }
+  const refBal = (currentUser.wallet && currentUser.wallet.refRewards) || 0;
+  if(amt > refBal){ toast('Insufficient referral earnings','err'); return; }
+
+  const req = {
+    userPhone: currentUser.phone,
+    userName: currentUser.name,
+    userPackage: currentUser.package,
+    wdType: 'ref',
+    amount: amt,
+    account: acc,
+    bank: bank,
+    accName: accName,
+    status: 'pending',
+    date: new Date().toISOString()
+  };
+
+  waitForAuth(() => {
+    db.ref('withdrawals').push(req).then(() => {
+      currentUser.wallet.refRewards = (currentUser.wallet.refRewards || 0) - amt;
+      currentUser.wallet.available = (currentUser.wallet.available || 0) - amt;
+      currentUser.wallet.pending = (currentUser.wallet.pending || 0) + amt;
+      saveUser();
+      loadDashboard();
+      loadWithdraw();
+      toast('Referral withdrawal request submitted!','ok');
+      $('wRefAmt').value = '';
+      $('wRefAcc').value = '';
+      $('wRefBank').value = '';
+      $('wRefAccName').value = '';
+    }).catch(() => toast('Error submitting withdrawal','err'));
+  });
+}
+
+// ==================== PROFILE ====================
+function loadProfile(){
+  if(!currentUser) return;
+  $('profName').textContent = currentUser.name;
+  $('profPhone').textContent = currentUser.phone;
+  $('profEmail').textContent = currentUser.email;
+  const pkg = currentUser.package ? PACKAGES[currentUser.package] : null;
+  $('profPkg').textContent = pkg ? pkg.name + ' Package' : 'No Package — Tap Upgrade to activate';
+  $('profCode').textContent = currentUser.refCode;
+  $('pAvail').textContent = fmtN((currentUser.wallet && currentUser.wallet.available));
+  $('pPending').textContent = fmtN((currentUser.wallet && currentUser.wallet.pending));
+}
+
+// ==================== ADMIN ====================
+function loadAdmin(){
+  if(!isAdmin){ toast('Admin access only','err'); goTo('dashboard'); return; }
+
+  const verified = allUsers.filter(u => !!u.package).length;
+  const penDeps = allDeposits.filter(d => d.status === 'pending').length;
+  const penWds = allWithdrawals.filter(w => w.status === 'pending').length;
+  const penRegs = allPendingRegs.filter(r => r.status === 'pending').length;
+  const penSocialSubs = socialSubmissions.filter(s => s.status === 'pending').length;
+  const totalWdAmt = allWithdrawals.filter(w => w.status === 'paid').reduce((a,w) => a + (w.amount||0), 0);
+
+  $('aUsers').textContent = allUsers.length;
+  $('aVerified').textContent = verified;
+  $('aPenReg').textContent = penRegs;
+  $('aPenWd').textContent = penWds;
+  $('aActivePkg').textContent = verified;
+  $('aTaskSub').textContent = socialSubmissions.length;
+  $('aPenTask').textContent = penSocialSubs;
+  $('aTotalWd').textContent = fmtN(totalWdAmt);
+
+  // Portal toggles
+  const taskBtn = $('portalTaskToggleBtn');
+  const taskStatusText = $('portalTaskStatusText');
+  if(portalTaskOpen){
+    taskBtn.innerHTML = '<i class="fas fa-lock"></i> Close';
+    taskBtn.style.background = 'var(--danger)';
+    taskStatusText.textContent = 'Task withdrawal portal is OPEN';
+  } else {
+    taskBtn.innerHTML = '<i class="fas fa-lock-open"></i> Open';
+    taskBtn.style.background = '';
+    taskStatusText.textContent = 'Task withdrawal portal is CLOSED';
+  }
+
+  const refBtn = $('portalRefToggleBtn');
+  const refStatusText = $('portalRefStatusText');
+  if(portalRefOpen){
+    refBtn.innerHTML = '<i class="fas fa-lock"></i> Close';
+    refBtn.style.background = 'var(--danger)';
+    refStatusText.textContent = 'Referral withdrawal portal is OPEN';
+  } else {
+    refBtn.innerHTML = '<i class="fas fa-lock-open"></i> Open';
+    refBtn.style.background = '';
+    refStatusText.textContent = 'Referral withdrawal portal is CLOSED';
+  }
+
+  // Load social task form values
+  Object.entries(socialTasks).forEach(([platform, data]) => {
+    const input = $('st_' + platform);
+    if(input && data && data.url) input.value = data.url;
+  });
+
+  // Pending Registrations
+  const prList = $('aPenRegList');
+  const penRegItems = allPendingRegs.filter(r => r.status === 'pending');
+  if(penRegItems.length === 0){
+    prList.innerHTML = '<div class="empty"><h4>No pending registrations</h4></div>';
+  } else {
+    prList.innerHTML = penRegItems.map(r => `
+      <div class="req-item" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:8px;">
+          <div>
+            <div class="ri-name">${r.phone}</div>
+            <div class="ri-meta">${(PACKAGES[r.package] && PACKAGES[r.package].name) || r.package} | ${fmtN(r.amount)}</div>
+          </div>
+          <span class="status-badge pending">pending</span>
+        </div>
+        <img src="${r.screenshot}" class="admin-img" style="max-height:200px;object-fit:contain;">
+        <div style="display:flex;gap:8px;margin-top:8px;width:100%;">
+          <button class="btn-green" onclick="adminApproveReg('${r.id}')" style="flex:1;padding:8px;font-size:12px;"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn-green" onclick="adminRejectReg('${r.id}')" style="flex:1;background:var(--danger);padding:8px;font-size:12px;"><i class="fas fa-times"></i> Reject</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Users
+  const uList = $('aUserList');
+  if(allUsers.length === 0){
+    uList.innerHTML = '<div class="empty"><h4>No users</h4></div>';
+  } else {
+    uList.innerHTML = allUsers.map(u => {
+      const pkg = u.package ? PACKAGES[u.package] : null;
+      return `
+      <div class="req-item">
+        <div>
+          <div class="ri-name">${u.name}</div>
+          <div class="ri-meta">${u.phone} | ${pkg ? pkg.name : 'No package'}</div>
+        </div>
+        <div style="text-align:right;">
+          <span class="status-badge ${u.suspended?'rejected':'approved'}">${u.suspended?'Suspended':'Active'}</span>
+          ${!u.suspended ? `<button onclick="adminSuspend('${u._key}')" style="background:var(--danger);color:white;border:none;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;margin-top:4px;display:block;">Suspend</button>` : `<button onclick="adminRestore('${u._key}')" style="background:var(--success);color:white;border:none;padding:4px 10px;border-radius:8px;font-size:11px;cursor:pointer;margin-top:4px;display:block;">Restore</button>`}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Deposits
+  const dList = $('aDepList');
+  const penDeposits = allDeposits.filter(d => d.status === 'pending');
+  if(penDeposits.length === 0){
+    dList.innerHTML = '<div class="empty"><h4>No pending deposits</h4></div>';
+  } else {
+    dList.innerHTML = penDeposits.map(d => `
+      <div class="req-item" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:8px;">
+          <div>
+            <div class="ri-name">${d.userName}</div>
+            <div class="ri-meta">${d.userPhone} | ${(PACKAGES[d.package] && PACKAGES[d.package].name) || d.package}</div>
+          </div>
+          <div class="ri-amt">${fmtN(d.amount)}</div>
+        </div>
+        <img src="${d.screenshot}" class="admin-img" style="max-height:200px;object-fit:contain;">
+        <div style="display:flex;gap:8px;margin-top:8px;width:100%;">
+          <button class="btn-green" onclick="adminApproveDep('${d.id}')" style="flex:1;padding:8px;font-size:12px;"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn-green" onclick="adminRejectDep('${d.id}')" style="flex:1;background:var(--danger);padding:8px;font-size:12px;"><i class="fas fa-times"></i> Reject</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Social Task Submissions (with image preview)
+  const ssList = $('adminSocialSubList');
+  const penSocialSubs2 = socialSubmissions.filter(s => s.status === 'pending');
+  if(penSocialSubs2.length === 0){
+    ssList.innerHTML = '<div class="empty"><h4>No pending social task submissions</h4></div>';
+  } else {
+    ssList.innerHTML = penSocialSubs2.map(s => {
+      const plat = SOCIAL_PLATFORMS[s.platform];
+      return `
+      <div class="req-item" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:8px;">
+          <div>
+            <div class="ri-name"><i class="fab ${(plat && plat.icon) || 'fa-globe'}" style="color:${(plat && plat.color) || 'var(--green)'};margin-right:6px;"></i> ${(plat && plat.name) || s.platform}</div>
+            <div class="ri-meta">${s.userName} | ${(PACKAGES[s.userPackage] && PACKAGES[s.userPackage].name) || s.userPackage} | ${fmtN(s.reward)}</div>
+          </div>
+        </div>
+        <img src="${s.proofImage}" class="admin-img" style="max-height:200px;object-fit:contain;border:2px solid #e5e7eb;">
+        <div style="display:flex;gap:8px;margin-top:8px;width:100%;">
+          <button class="btn-green" onclick="adminApproveSocialSub('${s.id}')" style="flex:1;padding:8px;font-size:12px;"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn-green" onclick="adminRejectSocialSub('${s.id}')" style="flex:1;background:var(--danger);padding:8px;font-size:12px;"><i class="fas fa-times"></i> Reject</button>
+        </div>
+      </div>
+    `}).join('');
+  }
+
+  // Withdrawals
+  const wList = $('aWdList');
+  const penWds2 = allWithdrawals.filter(w => w.status === 'pending');
+  if(penWds2.length === 0){
+    wList.innerHTML = '<div class="empty"><h4>No pending withdrawals</h4></div>';
+  } else {
+    wList.innerHTML = penWds2.map(w => `
+      <div class="req-item" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;justify-content:space-between;width:100%;margin-bottom:8px;">
+          <div>
+            <div class="ri-name">${w.userName}</div>
+            <div class="ri-meta">${w.userPhone} | ${w.wdType === 'ref' ? 'Referral' : 'Task'} | ${w.bank} | ${w.account}</div>
+          </div>
+          <div class="ri-amt">${fmtN(w.amount)}</div>
+        </div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:8px;">Acc Name: ${w.accName}</div>
+        <div style="display:flex;gap:8px;width:100%;">
+          <button class="btn-green" onclick="adminApproveWd('${w.id}')" style="flex:1;padding:8px;font-size:12px;"><i class="fas fa-check"></i> Approve</button>
+          <button class="btn-green" onclick="adminRejectWd('${w.id}')" style="flex:1;background:var(--danger);padding:8px;font-size:12px;"><i class="fas fa-times"></i> Reject</button>
+          <button class="btn-green" onclick="adminPaidWd('${w.id}')" style="flex:1;background:var(--success);padding:8px;font-size:12px;"><i class="fas fa-money-bill-wave"></i> Mark Paid</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Referrals
+  const rList = $('adminRefList');
+  const refMap = {};
+  allUsers.forEach(u => {
+    if(u.referredBy){
+      if(!refMap[u.referredBy]) refMap[u.referredBy] = [];
+      refMap[u.referredBy].push(u);
+    }
+  });
+  const refEntries = Object.entries(refMap);
+  if(refEntries.length === 0){
+    rList.innerHTML = '<div class="empty"><h4>No referrals yet</h4></div>';
+  } else {
+    rList.innerHTML = refEntries.map(([code, users]) => {
+      const referrer = allUsers.find(u => u.refCode === code);
+      const totalComm = users.reduce((a,u) => {
+        const pkg = u.package ? PACKAGES[u.package] : null;
+        return a + (pkg ? pkg.refCommission : 0);
+      }, 0);
+      return `
+      <div class="req-item" style="flex-direction:column;align-items:flex-start;">
+        <div style="display:flex;justify-content:space-between;width:100%;">
+          <div><div class="ri-name">${referrer ? referrer.name : code}</div><div class="ri-meta">${users.length} referral(s)</div></div>
+          <div class="ri-amt">${fmtN(totalComm)}</div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text-light);">
+          ${users.map(u => `${u.name} (${u.package ? (PACKAGES[u.package] && PACKAGES[u.package].name) : 'No pkg'})`).join(', ')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+
+// ==================== ADMIN ACTIONS ====================
+
+// --- Portal Toggles ---
+function toggleTaskWithdrawalPortal(){
+  const newState = !portalTaskOpen;
+  // Always update local state immediately
+  portalTaskOpen = newState;
+  localStorage.setItem('sf_portal_task', newState ? 'open' : 'closed');
+  toast('Task withdrawal portal ' + (newState?'opened':'closed'), newState?'ok':'warn');
+  loadAdmin();
+  // Try Firebase in background
+  waitForAuth(() => {
+    db.ref('portal/taskWithdrawal').set(newState).then(() => {
+      console.log('Task portal synced to Firebase');
+    }).catch(() => {
+      console.log('Task portal saved locally only');
+    });
+  });
+}
+
+function toggleRefWithdrawalPortal(){
+  const newState = !portalRefOpen;
+  // Always update local state immediately
+  portalRefOpen = newState;
+  localStorage.setItem('sf_portal_ref', newState ? 'open' : 'closed');
+  toast('Referral withdrawal portal ' + (newState?'opened':'closed'), newState?'ok':'warn');
+  loadAdmin();
+  // Try Firebase in background
+  waitForAuth(() => {
+    db.ref('portal/refWithdrawal').set(newState).then(() => {
+      console.log('Ref portal synced to Firebase');
+    }).catch(() => {
+      console.log('Ref portal saved locally only');
+    });
+  });
+}
+
+// --- Social Tasks Management ---
+function adminSaveSocialTasks(){
+  const tasks = {};
+  Object.keys(SOCIAL_PLATFORMS).forEach(platform => {
+    const url = ($('st_' + platform) && $('st_' + platform).value && $('st_' + platform).value.trim());
+    if(url){
+      tasks[platform] = {
+        url: url,
+        title: 'Follow our ' + ((SOCIAL_PLATFORMS[platform] && SOCIAL_PLATFORMS[platform].name) || platform) + ' page',
+        active: true,
+        updatedAt: new Date().toISOString()
+      };
+    }
+  });
+
+  // Save locally first
+  localStorage.setItem('sf_social_tasks', JSON.stringify(tasks));
+  socialTasks = tasks;
+
+  waitForAuth(() => {
+    db.ref('socialTasks').set(tasks).then(() => {
+      const statusEl = $('socialTaskStatus');
+      statusEl.style.display = 'block';
+      statusEl.style.background = '#d1fae5';
+      statusEl.style.color = '#065f46';
+      statusEl.innerHTML = '<i class="fas fa-check-circle"></i> Social links saved successfully!';
+      setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+      toast('Social links saved!','ok');
+    }).catch(() => {
+      const statusEl = $('socialTaskStatus');
+      statusEl.style.display = 'block';
+      statusEl.style.background = '#fef3c7';
+      statusEl.style.color = '#92400e';
+      statusEl.innerHTML = '<i class="fas fa-info-circle"></i> Saved locally. Will sync when online.';
+      setTimeout(() => { statusEl.style.display = 'none'; }, 3000);
+      toast('Saved locally. Will sync when online.','warn');
+    });
+  });
+}
+
+// --- Registration Actions ---
+function adminApproveReg(regId){
+  const reg = allPendingRegs.find(r => r.id === regId);
+  if(!reg) return;
+  waitForAuth(() => {
+    db.ref('pendingRegistrations/' + regId).update({
+      status: 'approved',
+      reviewedAt: new Date().toISOString()
+    }).then(() => {
+      // Update local
+      const localPending = JSON.parse(localStorage.getItem('sf_pending_regs') || '{}');
+      if(localPending[regId]){ localPending[regId].status = 'approved'; localStorage.setItem('sf_pending_regs', JSON.stringify(localPending)); }
+      toast('Registration approved! User can now complete signup.','ok');
+      loadAdmin();
+    }).catch(() => toast('Error approving registration','err'));
+  });
+}
+
+function adminRejectReg(regId){
+  const reason = prompt('Reason for rejection (optional):') || '';
+  waitForAuth(() => {
+    db.ref('pendingRegistrations/' + regId).update({
+      status: 'rejected',
+      reviewedAt: new Date().toISOString(),
+      reviewNote: reason
+    }).then(() => {
+      const localPending = JSON.parse(localStorage.getItem('sf_pending_regs') || '{}');
+      if(localPending[regId]){ localPending[regId].status = 'rejected'; localStorage.setItem('sf_pending_regs', JSON.stringify(localPending)); }
+      toast('Registration rejected','warn');
+      loadAdmin();
+    }).catch(() => toast('Error rejecting registration','err'));
+  });
+}
+
+// --- Deposit Actions ---
+function adminApproveDep(depId){
+  const dep = allDeposits.find(d => d.id === depId);
+  if(!dep) return;
+  waitForAuth(() => {
+    const updates = {};
+    updates['deposits/' + depId + '/status'] = 'approved';
+    updates['deposits/' + depId + '/reviewedAt'] = new Date().toISOString();
+    const userKey = getUserKey(dep.userPhone);
+    updates['users/' + userKey + '/package'] = dep.package;
+
+    db.ref('users/' + userKey).once('value').then(snap => {
+      const u = snap.val();
+      // Local fallback for user
+      const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+      if(allUsersLocal[userKey]){
+        allUsersLocal[userKey].package = dep.package;
+        localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal));
+      }
+
+      if(u && u.referredBy){
+        const comm = (PACKAGES[dep.package] && PACKAGES[dep.package].refCommission) || 0;
+        db.ref('users').orderByChild('refCode').equalTo(u.referredBy).once('value').then(snap2 => {
+          const refData = snap2.val();
+          if(refData){
+            const refKey = Object.keys(refData)[0];
+            const refUser = refData[refKey];
+            updates['users/' + refKey + '/wallet/refRewards'] = ((refUser.wallet && refUser.wallet.refRewards) || 0) + comm;
+            updates['users/' + refKey + '/wallet/available'] = ((refUser.wallet && refUser.wallet.available) || 0) + comm;
+            updates['users/' + refKey + '/referrals'] = (refUser.referrals || 0) + 1;
+            updates['referrals/' + u.referredBy + '/count'] = (refUser.referrals || 0) + 1;
+            // Local fallback for referrer
+            if(allUsersLocal[refKey]){
+              allUsersLocal[refKey].wallet = allUsersLocal[refKey].wallet || {};
+              allUsersLocal[refKey].wallet.refRewards = (allUsersLocal[refKey].wallet.refRewards || 0) + comm;
+              allUsersLocal[refKey].wallet.available = (allUsersLocal[refKey].wallet.available || 0) + comm;
+              allUsersLocal[refKey].referrals = (allUsersLocal[refKey].referrals || 0) + 1;
+              localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal));
+            }
+          }
+          db.ref().update(updates).then(() => {
+            toast('Deposit approved & package activated','ok');
+            loadAdmin();
+          }).catch(() => toast('Error updating deposit','err'));
+        });
+      } else {
+        db.ref().update(updates).then(() => {
+          toast('Deposit approved & package activated','ok');
+          loadAdmin();
+        }).catch(() => toast('Error updating deposit','err'));
+      }
+    });
+  });
+}
+
+function adminRejectDep(depId){
+  const reason = prompt('Reason for rejection (optional):') || '';
+  waitForAuth(() => {
+    db.ref('deposits/' + depId).update({
+      status: 'rejected',
+      reviewedAt: new Date().toISOString(),
+      reviewNote: reason
+    }).then(() => {
+      toast('Deposit rejected','warn');
+      loadAdmin();
+    }).catch(() => toast('Error rejecting deposit','err'));
+  });
+}
+
+// --- Social Submission Actions ---
+function adminApproveSocialSub(subId){
+  const sub = socialSubmissions.find(s => s.id === subId);
+  if(!sub) return;
+  waitForAuth(() => {
+    const userKey = getUserKey(sub.userPhone);
+    db.ref('users/' + userKey + '/wallet').once('value').then(snap => {
+      const w = snap.val() || {};
+      const newTask = (w.taskRewards || 0) + sub.reward;
+      const newAvail = (w.available || 0) + sub.reward;
+      const updates = {};
+      updates['socialSubmissions/' + subId + '/status'] = 'approved';
+      updates['socialSubmissions/' + subId + '/reviewedAt'] = new Date().toISOString();
+      updates['users/' + userKey + '/wallet/taskRewards'] = newTask;
+      updates['users/' + userKey + '/wallet/available'] = newAvail;
+
+      // Local fallback
+      const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+      if(allUsersLocal[userKey]){
+        allUsersLocal[userKey].wallet = allUsersLocal[userKey].wallet || {};
+        allUsersLocal[userKey].wallet.taskRewards = newTask;
+        allUsersLocal[userKey].wallet.available = newAvail;
+        localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal));
+      }
+
+      db.ref().update(updates).then(() => {
+        toast('Task approved & reward credited','ok');
+        loadAdmin();
+      }).catch(() => toast('Error approving task','err'));
+    });
+  });
+}
+
+function adminRejectSocialSub(subId){
+  const reason = prompt('Reason for rejection (optional):') || '';
+  waitForAuth(() => {
+    db.ref('socialSubmissions/' + subId).update({
+      status: 'rejected',
+      reviewedAt: new Date().toISOString(),
+      reviewNote: reason
+    }).then(() => {
+      toast('Task submission rejected','warn');
+      loadAdmin();
+    }).catch(() => toast('Error rejecting task','err'));
+  });
+}
+
+// --- Withdrawal Actions ---
+function adminApproveWd(wdId){
+  waitForAuth(() => {
+    db.ref('withdrawals/' + wdId).update({
+      status: 'approved',
+      reviewedAt: new Date().toISOString()
+    }).then(() => {
+      toast('Withdrawal approved','ok');
+      loadAdmin();
+    }).catch(() => toast('Error approving withdrawal','err'));
+  });
+}
+
+function adminRejectWd(wdId){
+  const wd = allWithdrawals.find(w => w.id === wdId);
+  if(!wd) return;
+  waitForAuth(() => {
+    const userKey = getUserKey(wd.userPhone);
+    db.ref('users/' + userKey + '/wallet').once('value').then(snap => {
+      const w = snap.val() || {};
+      const updates = {};
+      updates['withdrawals/' + wdId + '/status'] = 'rejected';
+      updates['withdrawals/' + wdId + '/reviewedAt'] = new Date().toISOString();
+
+      // Return funds to correct wallet
+      if(wd.wdType === 'ref'){
+        updates['users/' + userKey + '/wallet/refRewards'] = (w.refRewards || 0) + wd.amount;
+      } else {
+        updates['users/' + userKey + '/wallet/taskRewards'] = (w.taskRewards || 0) + wd.amount;
+      }
+      updates['users/' + userKey + '/wallet/available'] = (w.available || 0) + wd.amount;
+      updates['users/' + userKey + '/wallet/pending'] = Math.max(0, (w.pending || 0) - wd.amount);
+
+      // Local fallback
+      const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+      if(allUsersLocal[userKey]){
+        allUsersLocal[userKey].wallet = allUsersLocal[userKey].wallet || {};
+        if(wd.wdType === 'ref'){
+          allUsersLocal[userKey].wallet.refRewards = (allUsersLocal[userKey].wallet.refRewards || 0) + wd.amount;
+        } else {
+          allUsersLocal[userKey].wallet.taskRewards = (allUsersLocal[userKey].wallet.taskRewards || 0) + wd.amount;
+        }
+        allUsersLocal[userKey].wallet.available = (allUsersLocal[userKey].wallet.available || 0) + wd.amount;
+        allUsersLocal[userKey].wallet.pending = Math.max(0, (allUsersLocal[userKey].wallet.pending || 0) - wd.amount);
+        localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal));
+      }
+
+      db.ref().update(updates).then(() => {
+        toast('Withdrawal rejected, funds returned','warn');
+        loadAdmin();
+      }).catch(() => toast('Error rejecting withdrawal','err'));
+    });
+  });
+}
+
+function adminPaidWd(wdId){
+  const wd = allWithdrawals.find(w => w.id === wdId);
+  if(!wd) return;
+  waitForAuth(() => {
+    const userKey = getUserKey(wd.userPhone);
+    db.ref('users/' + userKey + '/wallet').once('value').then(snap => {
+      const w = snap.val() || {};
+      const updates = {};
+      updates['withdrawals/' + wdId + '/status'] = 'paid';
+      updates['withdrawals/' + wdId + '/txId'] = 'SF-' + Date.now();
+      updates['users/' + userKey + '/wallet/pending'] = Math.max(0, (w.pending || 0) - wd.amount);
+      updates['users/' + userKey + '/wallet/withdrawn'] = (w.withdrawn || 0) + wd.amount;
+
+      // Local fallback
+      const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+      if(allUsersLocal[userKey]){
+        allUsersLocal[userKey].wallet = allUsersLocal[userKey].wallet || {};
+        allUsersLocal[userKey].wallet.pending = Math.max(0, (allUsersLocal[userKey].wallet.pending || 0) - wd.amount);
+        allUsersLocal[userKey].wallet.withdrawn = (allUsersLocal[userKey].wallet.withdrawn || 0) + wd.amount;
+        localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal));
+      }
+
+      db.ref().update(updates).then(() => {
+        toast('Withdrawal marked as paid','ok');
+        loadAdmin();
+      }).catch(() => toast('Error marking paid','err'));
+    });
+  });
+}
+
+// --- User Management ---
+function adminSuspend(userKey){
+  if(!confirm('Suspend this user?')) return;
+  waitForAuth(() => {
+    db.ref('users/' + userKey + '/suspended').set(true).then(() => {
+      const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+      if(allUsersLocal[userKey]){ allUsersLocal[userKey].suspended = true; localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal)); }
+      toast('User suspended','ok');
+      loadAdmin();
+    }).catch(() => toast('Error suspending user','err'));
+  });
+}
+
+function adminRestore(userKey){
+  waitForAuth(() => {
+    db.ref('users/' + userKey + '/suspended').set(false).then(() => {
+      const allUsersLocal = JSON.parse(localStorage.getItem('sf_all_users') || '{}');
+      if(allUsersLocal[userKey]){ allUsersLocal[userKey].suspended = false; localStorage.setItem('sf_all_users', JSON.stringify(allUsersLocal)); }
+      toast('User restored','ok');
+      loadAdmin();
+    }).catch(() => toast('Error restoring user','err'));
+  });
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', function(){
+  toast('App loaded successfully','ok');
+  ensureAdminAccounts(); // Pre-create admin accounts so login always works
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const ref = urlParams.get('ref');
+  if(ref){
+    localStorage.setItem('sf_pending_ref', ref.toUpperCase());
+  }
+
+  const stored = localStorage.getItem('sf_user');
+  if(stored){
+    try {
+      currentUser = JSON.parse(stored);
+      isAdmin = ADMIN_PHONES.includes(sanitizePhone(currentUser.phone));
+      if(currentUser.suspended){
+        toast('Your account has been suspended. Contact admin.','err');
+        localStorage.removeItem('sf_user');
+        currentUser = null;
+        showLanding();
+      } else {
+        enterApp();
+      }
+    } catch(e) {
+      localStorage.removeItem('sf_user');
+      showLanding();
+    }
+  } else {
+    showLanding();
+  }
+
+  // Load social tasks from localStorage on init
+  const localSocialTasks = localStorage.getItem('sf_social_tasks');
+  if(localSocialTasks){
+    try { socialTasks = JSON.parse(localSocialTasks); } catch(e) {}
+  }
+  // Load social submissions from localStorage
+  const localSocialSubs = localStorage.getItem('sf_social_subs');
+  if(localSocialSubs){
+    try { 
+      const subs = JSON.parse(localSocialSubs);
+      socialSubmissions = Array.isArray(subs) ? subs : [];
+    } catch(e) {}
+  }
+
+  console.log('SkillForge v4.0 initialized.');
+});
+</script>
+</body>
+</html>
